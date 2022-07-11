@@ -12,6 +12,13 @@ return require('packer').startup({function()
   -- Packer can manage itself as an optional plugin
   use {'wbthomason/packer.nvim', opt = true}
 
+  -- 大切そうなやつ
+  use 'nvim-lua/popup.nvim'
+  use 'nvim-lua/plenary.nvim'
+  use 'MunifTanjim/nui.nvim'
+  use 'kyazdani42/nvim-web-devicons'
+  use 'rcarriga/nvim-notify'
+
   -- キーバインドをいい感じにする
   use 'folke/which-key.nvim'
 
@@ -23,4 +30,9 @@ return require('packer').startup({function()
     'nvim-lualine/lualine.nvim',
     requires = { 'kyazdani42/nvim-web-devicons', opt = true }
   }
+
+  -- lsp
+  use 'neovim/nvim-lspconfig'
+  use 'williamboman/nvim-lsp-installer'
+
 end, config = {compile_path = util.join_paths(vim.fn.stdpath('config'), 'packer_compiled.vim')}});
