@@ -1,7 +1,7 @@
   local fn = vim.fn
 
   local function diagnostics_indicator(_, _, diagnostics)
-    local symbols = { error = ' ', warning = ' ', info = 'ℹ️' } 
+    local symbols = { error = ' ', warning = ' ', info = ' ' }
     local result = {}
     for name, count in pairs(diagnostics) do
       if symbols[name] and count > 0 then
@@ -129,8 +129,8 @@
   require('which-key').register({
     ['gD'] = { '<Cmd>BufferLinePickClose<CR>', 'bufferline: delete buffer' },
     ['gb'] = { '<Cmd>BufferLinePick<CR>', 'bufferline: pick buffer' },
-    ['<leader><tab>'] = { '<Cmd>BufferLineCycleNext<CR>', 'bufferline: next' },
-    ['<S-tab>'] = { '<Cmd>BufferLineCyclePrev<CR>', 'bufferline: prev' },
+    ['<C-n>'] = { '<Cmd>BufferLineCycleNext<CR>', 'bufferline: next' },
+    ['<C-p>'] = { '<Cmd>BufferLineCyclePrev<CR>', 'bufferline: prev' },
     ['[b'] = { '<Cmd>BufferLineMoveNext<CR>', 'bufferline: move next' },
     [']b'] = { '<Cmd>BufferLineMovePrev<CR>', 'bufferline: move prev' },
     ['<leader>1'] = { '<Cmd>BufferLineGoToBuffer 1<CR>', 'which_key_ignore' },
