@@ -35,4 +35,9 @@ return require('packer').startup({function()
   use 'neovim/nvim-lspconfig'
   use 'williamboman/nvim-lsp-installer'
 
+  -- fizzy finder
+  use 'nvim-telescope/telescope.nvim'
+  use 'nvim-telescope/telescope-frecency.nvim'
+
+
 end, config = {compile_path = util.join_paths(vim.fn.stdpath('config'), 'packer_compiled.vim')}});
