@@ -57,6 +57,7 @@ return require('packer').startup({function()
   use 'folke/trouble.nvim'
   use 'lukas-reineke/cmp-under-comparator'
   use 'kkharji/lspsaga.nvim' 
+  use {'tzachar/cmp-tabnine', run='./install.sh', requires = 'hrsh7th/nvim-cmp'}
 
   -- rust
   use 'simrat39/rust-tools.nvim'
