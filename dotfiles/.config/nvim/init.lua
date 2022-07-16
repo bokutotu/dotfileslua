@@ -1,5 +1,7 @@
 require('plugins')
 require('basic')
+require('indent')
+
 require('rc.bufferline')
 require('rc.lualine')
 require('rc.lsp')

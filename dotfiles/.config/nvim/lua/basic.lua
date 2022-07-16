@@ -72,3 +72,4 @@ vim.api.nvim_command('nnoremap sv :<C-u>vs<CR><C-w>l')
 -- color schemt
 vim.api.nvim_command('colorscheme hybrid')
 vim.api.nvim_command('set background=dark')
+
