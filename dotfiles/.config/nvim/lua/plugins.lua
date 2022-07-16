@@ -79,4 +79,9 @@ return require('packer').startup({function()
   -- MarkDown
   use 'iamcco/markdown-preview.nvim'
 
+  use {
+      "SmiteshP/nvim-navic",
+      requires = "neovim/nvim-lspconfig"
+  }
+
 end, config = {compile_path = util.join_paths(vim.fn.stdpath('config'), 'packer_compiled.vim')}});
