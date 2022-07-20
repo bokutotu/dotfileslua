@@ -84,4 +84,7 @@ return require('packer').startup({function()
       requires = "neovim/nvim-lspconfig"
   }
 
+  -- インデントをみやすくする
+  use "lukas-reineke/indent-blankline.nvim"
+
 end, config = {compile_path = util.join_paths(vim.fn.stdpath('config'), 'packer_compiled.vim')}});

@@ -18,3 +18,7 @@ for _, server in ipairs(lsp_installer.get_installed_servers()) do
     on_attach = on_attach,
   }
 end
+
+lspconfig.elmls.setup {
+  root_dir = require "lspconfig.util".root_pattern("elm.json",".git")
+}
