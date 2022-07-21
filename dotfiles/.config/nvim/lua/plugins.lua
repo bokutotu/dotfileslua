@@ -18,6 +18,7 @@ return require('packer').startup({function()
   use 'MunifTanjim/nui.nvim'
   use 'kyazdani42/nvim-web-devicons'
   use 'rcarriga/nvim-notify'
+  use 'vim-denops/denops.vim'
 
   -- キーバインドをいい感じにする
   use 'folke/which-key.nvim'
@@ -86,5 +87,8 @@ return require('packer').startup({function()
 
   -- インデントをみやすくする
   use "lukas-reineke/indent-blankline.nvim"
+
+  -- コード内ファジーファインダ
+  use 'yuki-yano/fuzzy-motion.vim'
 
 end, config = {compile_path = util.join_paths(vim.fn.stdpath('config'), 'packer_compiled.vim')}});
