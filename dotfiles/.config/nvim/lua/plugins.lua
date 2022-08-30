@@ -53,7 +53,6 @@ return require('packer').startup({function()
   use 'f3fora/cmp-spell'
   use 'yutkat/cmp-mocword'
   use 'ray-x/cmp-treesitter'
-  -- use 'tami5/lspsaga.nvim'
   use 'folke/lsp-colors.nvim'
   use 'folke/trouble.nvim'
   use 'lukas-reineke/cmp-under-comparator'
