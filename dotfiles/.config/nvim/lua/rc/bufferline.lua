@@ -47,7 +47,7 @@
       right_mouse_command = 'vert sbuffer %d',
       show_close_icon = false,
       ---based on https://github.com/kovidgoyal/kitty/issues/957
-      -- separator_style = os.getenv('KITTY_WINDOW_ID') and 'slant' or 'padded_slant',
+      separator_style = os.getenv('KITTY_WINDOW_ID') and 'slant' or 'padded_slant',
       show_buffer_close_icons = true,
       diagnostics = 'nvim_lsp',
       diagnostics_indicator = diagnostics_indicator,
@@ -142,4 +142,4 @@
     ['<leader>7'] = { '<Cmd>BufferLineGoToBuffer 7<CR>', 'which_key_ignore' },
     ['<leader>8'] = { '<Cmd>BufferLineGoToBuffer 8<CR>', 'which_key_ignore' },
     ['<leader>9'] = { '<Cmd>BufferLineGoToBuffer 9<CR>', 'which_key_ignore' },
-  })
+ })
