@@ -36,7 +36,7 @@
       debug = {
         logging = true,
       },
-      indicator_icon = '▎',
+      indicator = { style = "icon", icon = "▎" },
       buffer_close_icon = '',
       modified_icon = '●',
       close_icon = '',
