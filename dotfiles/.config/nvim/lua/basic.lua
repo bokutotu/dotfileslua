@@ -73,3 +73,12 @@ vim.api.nvim_command('nnoremap sv :<C-u>vs<CR><C-w>l')
 vim.api.nvim_command('colorscheme hybrid')
 vim.api.nvim_command('set background=dark')
 
+vim.api.nvim_command("set fileformats=unix,dos,mac")
+vim.api.nvim_command("set fileencodings=utf-8,sjis")
+
+vim.api.nvim_command("set tags=.tags;")
+
+vim.api.nvim_create_autocmd({"BufWritePost"}, {command="silent !ctags -R -f .tags" })
+-- vim.api.nvim_create_autocmd("ctags",{
+--  "BufWritePost * silent !ctags -R -f .tags",
+--})
