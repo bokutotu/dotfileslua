@@ -92,5 +92,8 @@ return require('packer').startup({function()
 
   -- ctags
   -- use 'soramugi/auto-ctags.vim'
+  
+  -- file explorer
+  use 'nvim-tree/nvim-tree.lua'
 
 end, config = {compile_path = util.join_paths(vim.fn.stdpath('config'), 'packer_compiled.vim')}});
