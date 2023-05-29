@@ -27,7 +27,8 @@ augroup fileTypeIndent
     autocmd BufRead,BufNewFile *.sql setlocal tabstop=2 softtabstop=2 shiftwidth=2
     autocmd BufRead,BufNewFile *.csproj setlocal tabstop=2 softtabstop=2 shiftwidth=2
     autocmd BufRead,BufNewFile *.go setlocal tabstop=4 softtabstop=4 shiftwidth=4
-
+    autocmd BufRead,BufNewFile *.sh setlocal tabstop=2 softtabstop=2 shiftwidth=2
+    autocmd BufRead,BufNewFile *.bash setlocal tabstop=2 softtabstop=2 shiftwidth=2
 augroup END
 
 ]]
