@@ -215,7 +215,7 @@ cmp.setup.cmdline(":", {
 })
 
 
--- local capabilities = require("cmp_nvim_lsp").defalut_capabilities()
+local capabilities = require("cmp_nvim_lsp").default_capabilities()
 local lsp_attach = function(client, buf)
 	-- Example maps, set your own with vim.api.nvim_buf_set_keymap(buf, "n", <lhs>, <rhs>, { desc = <desc> })
 	-- or a plugin like which-key.nvim

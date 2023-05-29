@@ -11,6 +11,7 @@ util = require('packer/util')
 return require('packer').startup({function()
   -- Packer can manage itself as an optional plugin
   use {'wbthomason/packer.nvim', opt = true}
+  use 'github/copilot.vim'
 
   -- 大切そうなやつ
   use 'nvim-lua/popup.nvim'
@@ -90,7 +91,7 @@ return require('packer').startup({function()
   -- コード内ファジーファインダ
   use 'yuki-yano/fuzzy-motion.vim'
 
-  -- ctags
-  -- use 'soramugi/auto-ctags.vim'
+  -- file explorer
+  use 'nvim-tree/nvim-tree.lua'
 
 end, config = {compile_path = util.join_paths(vim.fn.stdpath('config'), 'packer_compiled.vim')}});

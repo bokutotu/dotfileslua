@@ -15,8 +15,9 @@ zinit load "mafredri/zsh-async"
 zinit load "sindresorhus/pure"
 zstyle :prompt:pure:path color '#00FFFF'
 
-# cdをオーバーライドしてハイパワーにするやつ
-zinit load "b4b4r07/enhancd"
+# カスタムしたenhancd
+zinit load "bokutotu/enhancd"
+
 # cdした後にlsを実行する
 export ENHANCD_HOOK_AFTER_CD=ls
 
