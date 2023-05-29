@@ -91,6 +91,6 @@ return require('packer').startup({function()
   use 'yuki-yano/fuzzy-motion.vim'
 
   -- ctags
-  use 'soramugi/auto-ctags.vim'
+  -- use 'soramugi/auto-ctags.vim'
 
 end, config = {compile_path = util.join_paths(vim.fn.stdpath('config'), 'packer_compiled.vim')}});

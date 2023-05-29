@@ -22,3 +22,17 @@ end
 lspconfig.elmls.setup {
   root_dir = require "lspconfig.util".root_pattern("elm.json",".git")
 }
+
+lspconfig.ccls.setup {
+  init_options = {
+    compilationDatabaseDirectory = "build";
+    index = {
+      threads = 0;
+    };
+    clang = {
+      excludeArgs = { "-frounding-math"} ;
+    };
+  },
+  filetypes = { "cuda", "cpp", "c" }
+}
+
