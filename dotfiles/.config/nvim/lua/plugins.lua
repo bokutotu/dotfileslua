@@ -94,4 +94,9 @@ return require('packer').startup({function()
   -- file explorer
   use 'nvim-tree/nvim-tree.lua'
 
+  -- file explorer
+  use 'udalov/kotlin-vim'
+
+  use 'sbdchd/neoformat'
+
 end, config = {compile_path = util.join_paths(vim.fn.stdpath('config'), 'packer_compiled.vim')}});

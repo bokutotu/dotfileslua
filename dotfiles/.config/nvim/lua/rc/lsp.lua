@@ -36,3 +36,15 @@ lspconfig.ccls.setup {
   filetypes = { "cuda", "cpp", "c" }
 }
 
+
+lspconfig.kotlin_language_server.setup{
+  settings = {
+    kotlin = {
+      compiler = {
+        jvm = {
+          target = "1.8";
+        }
+      };
+    };
+  }
+}
