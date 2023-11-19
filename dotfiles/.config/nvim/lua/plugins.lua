@@ -13,6 +13,8 @@ return require('packer').startup({function()
   use {'wbthomason/packer.nvim', opt = true}
   use 'github/copilot.vim'
 
+  use 'navarasu/onedark.nvim'
+
   -- 大切そうなやつ
   use 'nvim-lua/popup.nvim'
   use 'nvim-lua/plenary.nvim'

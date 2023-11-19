@@ -15,20 +15,20 @@ cmp.setup({
   mapping = {
     ["<C-j>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), { "i", "c" }),
     ["<C-k>"] = cmp.mapping(cmp.mapping.scroll_docs(4), { "i", "c" }),
-    ["<Up>"] = cmp.mapping(function(fallback)
+    ["<C-p>"] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
       else
         fallback()
       end
     end, { "i" }),
-  ["<Down>"] = cmp.mapping(function(fallback)
-    if cmp.visible() then
-      cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
-    else
-      fallback()
-    end
-    end, { "i" }),
+    ["<C-n>"] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+      else
+        fallback()
+      end
+      end, { "i" }),
     ["<S-Tab>"] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_prev_item()

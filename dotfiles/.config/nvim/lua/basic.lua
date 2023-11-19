@@ -70,7 +70,8 @@ vim.api.nvim_command('nnoremap ss :<C-u>sp<CR><C-w>j')
 vim.api.nvim_command('nnoremap sv :<C-u>vs<CR><C-w>l')
 
 -- color schemt
-vim.api.nvim_command('colorscheme hybrid')
+-- vim.api.nvim_command('colorscheme hybrid')
+vim.api.nvim_command('colorscheme onedark')
 vim.api.nvim_command('set background=dark')
 
 vim.api.nvim_command("set fileformats=unix,dos,mac")
