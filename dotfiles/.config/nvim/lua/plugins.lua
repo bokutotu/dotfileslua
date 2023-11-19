@@ -97,7 +97,6 @@ return require('packer').startup({function()
   -- file explorer
   use 'nvim-tree/nvim-tree.lua'
 
-  -- file explorer
   use 'udalov/kotlin-vim'
 
   use 'sbdchd/neoformat'
