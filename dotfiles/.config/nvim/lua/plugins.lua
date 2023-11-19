@@ -62,6 +62,7 @@ return require('packer').startup({function()
 
   -- rust
   use 'simrat39/rust-tools.nvim'
+  use 'rust-lang/rust.vim'
 
   -- treesitter
   use 'nvim-treesitter/nvim-treesitter'
