@@ -11,6 +11,8 @@ local function my_on_attach(bufnr)
   api.config.mappings.default_on_attach(bufnr)
   -- custom mappings
   vim.keymap.del("n", "s", {buffer = bufnr})
+  -- ss is open system `nvim-tree-api.node.run.system()`
+  vim.keymap.set("n", "ss", api.node.run.system, {buffer = bufnr})
 end
 
 -- OR setup with some options
@@ -30,5 +32,3 @@ require("nvim-tree").setup({
 
 -- Toggle NvimTree with Ctrl-b
 vim.api.nvim_set_keymap("n", "<C-b>", "<cmd>NvimTreeToggle<cr>", { silent = true, noremap = true })
-
-vim.api.nvim_set_keymap("n", "ss", "<cmd>lua require'nvim-tree'.on_keypress('ss')<cr>", { noremap = true, silent = true })
