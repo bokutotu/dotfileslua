@@ -101,4 +101,6 @@ return require('packer').startup({function()
 
   use 'sbdchd/neoformat'
 
+  use 'akinsho/flutter-tools.nvim'
+
 end, config = {compile_path = util.join_paths(vim.fn.stdpath('config'), 'packer_compiled.vim')}});
