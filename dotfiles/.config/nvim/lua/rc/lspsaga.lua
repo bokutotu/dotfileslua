@@ -2,10 +2,10 @@ local lspsaga = require 'lspsaga'
 lspsaga.setup { -- defaults ...
   debug = false,
   use_saga_diagnostic_sign = true,
-  -- diagnostic sign
-  error_sign = "",
+  -- diagnostic sign
+  error_sign = ","
   warn_sign = "",
-  hint_sign = "",
+  hint_sign = "",
   infor_sign = "",
   diagnostic_header_icon = "   ",
   -- code action title icon
@@ -35,7 +35,7 @@ lspsaga.setup { -- defaults ...
     quit = "<C-c>",
     exec = "<CR>",
   },
-  definition_preview_icon = "  ",
+  definition_preview_icon = "󰇀 ",
   border_style = "single",
   rename_prompt_prefix = "➤",
   rename_output_qflist = {
