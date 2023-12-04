@@ -21,10 +21,10 @@ vim.api.nvim_create_autocmd("FileType", {
     end
 })
 
-vim.api.nvim_create_autocmd("BufLeave", {
-    pattern = "*.dart",
-    callback = function()
-        vim.cmd("TSEnable indent")
-    end
-})
-
+-- vim.api.nvim_create_autocmd("BufLeave", {
+--     pattern = "*.dart",
+--     callback = function()
+--         vim.cmd("TSEnable indent")
+--     end
+-- })
+--

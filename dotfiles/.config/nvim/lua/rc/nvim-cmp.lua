@@ -158,11 +158,3 @@ lspconfig.dartls.setup({
   capabilities = capabilities,
   on_attach = on_attach,
 })
-
--- C/C++ (clangd)
-lspconfig.clangd.setup({
-  capabilities = capabilities,
-  on_attach = on_attach,
-  cmd = {"clangd", "--background-index"},
-})
-
