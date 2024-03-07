@@ -103,4 +103,16 @@ return require('packer').startup({function()
 
   use 'akinsho/flutter-tools.nvim'
 
+  use {
+    'CopilotC-Nvim/CopilotChat.nvim',
+    branch = 'canary',
+    requires = {
+      'github/copilot.vim',
+      'nvim-lua/plenary.nvim',
+    },
+    opts = {
+      debug = true,
+    }
+  }
+
 end, config = {compile_path = util.join_paths(vim.fn.stdpath('config'), 'packer_compiled.vim')}});
