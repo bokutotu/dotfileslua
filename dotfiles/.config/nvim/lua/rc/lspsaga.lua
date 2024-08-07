@@ -1,5 +1,8 @@
 local lspsaga = require 'lspsaga'
 lspsaga.setup { -- defaults ...
+  ui = {
+    code_action = '',  -- コードアクションアイコンを空に設定
+  },
   debug = false,
   use_saga_diagnostic_sign = true,
   -- diagnostic sign
@@ -9,7 +12,7 @@ lspsaga.setup { -- defaults ...
   infor_sign = "",
   diagnostic_header_icon = "   ",
   -- code action title icon
-  code_action_icon = "",
+  code_action_icon = "💡",
   code_action_prompt = {
     enable = true,
     sign = true,

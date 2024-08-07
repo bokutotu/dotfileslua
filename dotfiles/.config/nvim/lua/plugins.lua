@@ -59,7 +59,7 @@ return require('packer').startup({function()
   use 'folke/lsp-colors.nvim'
   use 'folke/trouble.nvim'
   use 'lukas-reineke/cmp-under-comparator'
-  use 'kkharji/lspsaga.nvim' 
+  use 'nvimdev/lspsaga.nvim' 
   use {'tzachar/cmp-tabnine', run='./install.sh', requires = 'hrsh7th/nvim-cmp'}
 
   -- rust
