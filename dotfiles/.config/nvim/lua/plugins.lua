@@ -24,10 +24,10 @@ return require('packer').startup({function()
   use 'vim-denops/denops.vim'
 
   -- キーバインドをいい感じにする
-  use 'folke/which-key.nvim'
+  -- use 'folke/which-key.nvim'
 
   -- buffer line
-  use {'akinsho/bufferline.nvim', tag = "v2.*", requires = 'kyazdani42/nvim-web-devicons'}
+  use {'akinsho/bufferline.nvim', tag = "v4.*", requires = 'kyazdani42/nvim-web-devicons'}
 
   -- status line
   use {

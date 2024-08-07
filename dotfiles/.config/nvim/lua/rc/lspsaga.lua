@@ -49,15 +49,15 @@ lspsaga.setup { -- defaults ...
   highlight_prefix = false,
 }
 
-local wk = require("which-key")
-wk.register({
-  ['gr'] =  {'<Cmd>Lspsaga rename<CR>', 'Lspsaga Rename'},
-  ['gx'] =  {'<Cmd>Lspsaga code_action<CR>', 'Lspsaga Code Action'},
-  ['K'] =   {'<Cmd>Lspsaga hover_doc<CR>', 'Lspsaga hover document'},
-  ['go'] =  {'<Cmd>Lspsaga show_line_diagnostics<CR>', 'Lspsaga show_line_diagnostics'},
-  ['gj'] =  {'<Cmd>Lspsaga diagnostic_jump_next<CR>', 'Lspsaga diagnostic_jump_next'},
-  ['gk'] =  {'<Cmd>Lspsaga diagnostic_jump_prev<CR>', 'Lspsaga diagnostic_jump_next'},
-})
+-- local wk = require("which-key")
+-- wk.register({
+--   ['gr'] =  {'<Cmd>Lspsaga rename<CR>', 'Lspsaga Rename'},
+--   ['gx'] =  {'<Cmd>Lspsaga code_action<CR>', 'Lspsaga Code Action'},
+--   ['K'] =   {'<Cmd>Lspsaga hover_doc<CR>', 'Lspsaga hover document'},
+--   ['go'] =  {'<Cmd>Lspsaga show_line_diagnostics<CR>', 'Lspsaga show_line_diagnostics'},
+--   ['gj'] =  {'<Cmd>Lspsaga diagnostic_jump_next<CR>', 'Lspsaga diagnostic_jump_next'},
+--   ['gk'] =  {'<Cmd>Lspsaga diagnostic_jump_prev<CR>', 'Lspsaga diagnostic_jump_next'},
+-- })
 
 --- In lsp attach function
 local map = vim.api.nvim_buf_set_keymap
@@ -70,3 +70,17 @@ local map = vim.api.nvim_buf_set_keymap
 --- map(0, "n", "gk", "<cmd>Lspsaga diagnostic_jump_prev<cr>", {silent = true, noremap = true})
 map(0, "n", "<C-u>", "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1, '<c-u>')<cr>", {})
 map(0, "n", "<C-d>", "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(1, '<c-d>')<cr>", {})
+-- Function to set keymaps
+local function map(mode, lhs, rhs, opts)
+    local options = { noremap = true, silent = true }
+    if opts then options = vim.tbl_extend('force', options, opts) end
+    vim.api.nvim_set_keymap(mode, lhs, rhs, options)
+end
+
+-- Lspsaga keybindings
+map('n', 'gr', '<Cmd>Lspsaga rename<CR>', { desc = 'Lspsaga Rename' })
+map('n', 'gx', '<Cmd>Lspsaga code_action<CR>', { desc = 'Lspsaga Code Action' })
+map('n', 'K', '<Cmd>Lspsaga hover_doc<CR>', { desc = 'Lspsaga hover document' })
+map('n', 'go', '<Cmd>Lspsaga show_line_diagnostics<CR>', { desc = 'Lspsaga show_line_diagnostics' })
+map('n', 'gj', '<Cmd>Lspsaga diagnostic_jump_next<CR>', { desc = 'Lspsaga diagnostic_jump_next' })
+map('n', 'gk', '<Cmd>Lspsaga diagnostic_jump_prev<CR>', { desc = 'Lspsaga diagnostic_jump_prev' })

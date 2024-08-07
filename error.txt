@@ -1,0 +1,7 @@
+E5108: Error executing lua /home/bokutotu/.config/nvim/lua/rc/bufferline.lua:110: attempt to index field 'filename' (a nil value)
+stack traceback:
+        /home/bokutotu/.config/nvim/lua/rc/bufferline.lua:110: in function 'matcher'
+        ...k/packer/start/bufferline.nvim/lua/bufferline/groups.lua:197: in function 'set_id'
+        .../packer/start/bufferline.nvim/lua/bufferline/buffers.lua:74: in function 'get_components'
+        ...ite/pack/packer/start/bufferline.nvim/lua/bufferline.lua:56: in function <...ite/pack/packer/start/bufferline.nvim/lua/bufferline.lua:54>
+
