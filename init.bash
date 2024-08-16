@@ -1,10 +1,10 @@
 #!bin/bash
 
 # update upgrae
-apt update && apt upgrade
+apt update && apt upgrade -y
 
 # install zsh
-sudo apt install zsh -y
+apt install zsh -y
 
 chsh -s $(which zsh)
 
