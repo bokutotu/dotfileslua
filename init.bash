@@ -44,3 +44,29 @@ curl -fsSL https://deno.land/x/install/install.sh | sh
 
 echo 'export DENO_INSTALL="$HOME/.deno"' >> ~/.alias.zsh
 echo 'export PATH="$DENO_INSTALL/bin:$PATH"' >> ~/.alias.zsh
+
+# NVMのインストール
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+
+# NVMの設定を.alias.zshに追加
+echo '' >> ~/.alias.zsh
+echo '# NVM設定' >> ~/.alias.zsh
+echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.alias.zsh
+echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm' >> ~/.alias.zsh
+echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion' >> ~/.alias.zsh
+
+# NVMをソースして即座に使用可能にする
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+# 最新のNode.js LTSバージョンをインストール
+nvm install --lts
+
+# インストールしたLTSバージョンをデフォルトに設定
+nvm use --lts
+
+# Node.jsとnpmのバージョンを表示して確認
+node --version
+npm --version
+
