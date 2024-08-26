@@ -152,7 +152,7 @@ require'lspconfig'.rust_analyzer.setup{
       };
     }
   }
-})
+}
 
 -- Python (pyright)
 lspconfig.pyright.setup({
