@@ -66,6 +66,9 @@ return require('packer').startup({function()
   use 'simrat39/rust-tools.nvim'
   use 'rust-lang/rust.vim'
 
+  -- 今いる単語をハイライト
+  use 'RRethy/vim-illuminate'
+
   -- treesitter
   use 'nvim-treesitter/nvim-treesitter'
   use 'yioneko/nvim-yati'

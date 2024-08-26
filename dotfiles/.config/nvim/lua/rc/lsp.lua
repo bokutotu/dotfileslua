@@ -19,9 +19,9 @@ for _, server in ipairs(lsp_installer.get_installed_servers()) do
   }
 end
 
-lspconfig.elmls.setup {
-  root_dir = require "lspconfig.util".root_pattern("elm.json",".git")
-}
+-- lspconfig.elmls.setup {
+--   root_dir = require "lspconfig.util".root_pattern("elm.json",".git")
+-- }
 
 lspconfig.ccls.setup {
   init_options = {
@@ -37,14 +37,25 @@ lspconfig.ccls.setup {
 }
 
 
-lspconfig.kotlin_language_server.setup{
+-- lspconfig.kotlin_language_server.setup{
+--   settings = {
+--     kotlin = {
+--       compiler = {
+--         jvm = {
+--           target = "1.8";
+--         }
+--       };
+--     };
+--   }
+-- }
+--
+
+require'lspconfig'.crust_analyzer.setup{
   settings = {
-    kotlin = {
-      compiler = {
-        jvm = {
-          target = "1.8";
-        }
+    ["rust-analyzer"] = {
+      checkOnSave = {
+        command = "clippy";
       };
-    };
+    }
   }
 }
