@@ -142,9 +142,16 @@ end
 local capabilities = cmp_nvim_lsp.default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
 -- Rust (rust_analyzer)
-lspconfig.rust_analyzer.setup({
+require'lspconfig'.rust_analyzer.setup{
   capabilities = capabilities,
   on_attach = on_attach,
+  settings = {
+    ["rust-analyzer"] = {
+      checkOnSave = {
+        command = "clippy";
+      };
+    }
+  }
 })
 
 -- Python (pyright)
@@ -153,8 +160,8 @@ lspconfig.pyright.setup({
   on_attach = on_attach,
 })
 
--- Dart (dartls)
-lspconfig.dartls.setup({
-  capabilities = capabilities,
-  on_attach = on_attach,
-})
+-- -- Dart (dartls)
+-- lspconfig.dartls.setup({
+--   capabilities = capabilities,
+--   on_attach = on_attach,
+-- })
