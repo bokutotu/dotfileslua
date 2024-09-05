@@ -37,9 +37,9 @@ impl_error_from!(String, Error::NotFoundError);
 impl std::fmt::Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Error::IO(error) => write!(f, "io error {}", error),
-            Error::FMT(error) => write!(f, "fmt error {}", error),
-            Error::NotFoundError(error) => write!(f, "file {:?} is Not Found", error),
+            Error::IO(error) => write!(f, "io error {error}"),
+            Error::FMT(error) => write!(f, "fmt error {error}"),
+            Error::NotFoundError(error) => write!(f, "file {error} is Not Found"),
             Error::ConversionError => write!(f, "ConversionError"),
             Error::FromUtf8Error => write!(f, "faild convert utf8"),
         }
@@ -48,22 +48,22 @@ impl std::fmt::Display for Error {
 
 impl std::error::Error for Error {}
 
-/// pathから、remove_stringを排除し、Stringとしてかえす。
-fn remove_useless_path_string(remove_string: &String, path: &PathBuf) -> String {
+/// `path`から、`remove_string`を排除し、`String`としてかえす。
+fn remove_useless_path_string(remove_string: &String, path: &Path) -> String {
     path.as_os_str()
         .to_str()
         .unwrap()
         .to_string()
-        .replace(&(remove_string.clone() + "/"), "")
+        .replace(&(remove_string.to_owned() + "/"), "")
 }
 
-/// 与えられたディレクトリのファイルのパスをPathBufのVecとして返す。
+/// 与えられたディレクトリのファイルのパスを`PathBuf`のVecとして返す。
 /// エラーがあった場合は、Errorで返す。
-fn dir_traversal<'a, T: AsRef<Path>>(dir: T) -> Result<Vec<PathBuf>, Error> {
+fn dir_traversal<T: AsRef<Path>>(dir: T) -> Result<Vec<PathBuf>, Error> {
     let dir = dir.as_ref();
     let mut paths = Vec::new();
     if dir.is_file() {
-        paths.push(dir.to_path_buf())
+        paths.push(dir.to_path_buf());
     } else {
         for path in dir.read_dir()? {
             paths.append(&mut dir_traversal(path?.path())?);
@@ -95,21 +95,17 @@ fn mkdir_rec<P: AsRef<Path>>(dir: P) -> Result<(), Error> {
 fn check_and_mkdir<P: AsRef<Path> + std::fmt::Debug>(path: P) -> Result<(), Error> {
     if dir_exist(&path) {
         return Ok(());
-    } else {
-        let path = path.as_ref();
-        let parent = match path.parent() {
-            Some(x) => x,
-            None => {
-                panic!("なんかおかしい2022年");
-            }
-        };
-        println!("dir {:?} is not exit. so mkdir", &parent);
-        mkdir_rec(&parent)?;
-    }
+    } 
+    let path = path.as_ref();
+    let Some(parent )= path.parent()else  {
+        panic!("なんかおかしい2022年");
+    };
+    println!("dir {:?} is not exit. so mkdir", &parent);
+    mkdir_rec(parent)?;
     Ok(())
 }
 
-/// std::fs::copyのラッパー
+/// `std::fs::copy`のラッパー
 fn cp<P: AsRef<Path> + std::fmt::Debug>(source: P, target: P) -> Result<(), Error> {
     check_and_mkdir(&target)?;
     fs::copy(source.as_ref(), target.as_ref())?;
@@ -120,10 +116,10 @@ fn byte_string(bite: Vec<u8>) -> Result<String, Error> {
     Ok(String::from_utf8(bite)?)
 }
 
-fn print_with_new_line(string: String) {
-    let lines: Vec<&str> = string.split("\n").collect();
+fn print_with_new_line(string: &str) {
+    let lines: Vec<&str> = string.split('\n').collect();
     for line in lines {
-        println!("{}", line);
+        println!("{line}");
     }
 }
 
@@ -157,9 +153,9 @@ fn zinit() -> Result<(), Error> {
         .expect("Failed to install zinit");
     println!("INSTALL STATUS {:?}", &install_res.status);
     println!("INSTALL STDOUT");
-    print_with_new_line(byte_string(install_res.stdout)?);
+    print_with_new_line(&byte_string(install_res.stdout)?);
     println!("INSTALL STDERR");
-    print_with_new_line(byte_string(install_res.stderr)?);
+    print_with_new_line(&byte_string(install_res.stderr)?);
     println!("=============================================");
     Ok(())
 }
@@ -185,8 +181,8 @@ fn fzf() -> Result<(), Error> {
     let install = Command::new("~/.fzf/install")
         .output()
         .expect("Failed to install fzf");
-    print_with_new_line(byte_string(install.stdout)?);
-    print_with_new_line(byte_string(install.stderr)?);
+    print_with_new_line(&byte_string(install.stdout)?);
+    print_with_new_line(&byte_string(install.stderr)?);
     println!("=============================================");
     Ok(())
 }
@@ -198,8 +194,8 @@ fn ripgrep() -> Result<(), Error> {
         .args(["install", "ripgrep"])
         .output()
         .expect("faild to install");
-    print_with_new_line(byte_string(command.stderr)?);
-    print_with_new_line(byte_string(command.stdout)?);
+    print_with_new_line(&byte_string(command.stderr)?);
+    print_with_new_line(&byte_string(command.stdout)?);
     println!("=============================================");
     Ok(())
 }
@@ -213,7 +209,7 @@ fn main() -> Result<(), Error> {
     ripgrep()?;
     for path in files {
         let mut new_path = home_dir.clone();
-        new_path.push(&remove_useless_path_string(&dofiles_path, &path));
+        new_path.push(remove_useless_path_string(&dofiles_path, &path));
         println!("copy {:?} to {:?}", &path, &new_path);
         cp(path, new_path)?;
     }
