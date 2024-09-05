@@ -19,10 +19,6 @@ for _, server in ipairs(lsp_installer.get_installed_servers()) do
   }
 end
 
--- lspconfig.elmls.setup {
---   root_dir = require "lspconfig.util".root_pattern("elm.json",".git")
--- }
-
 lspconfig.ccls.setup {
   init_options = {
     compilationDatabaseDirectory = "build";
@@ -34,16 +30,6 @@ lspconfig.ccls.setup {
     };
   },
   filetypes = { "cuda", "cpp", "c" }
-}
-
-require'lspconfig'.rust_analyzer.setup{
-  settings = {
-    ["rust-analyzer"] = {
-      checkOnSave = {
-        command = "clippy";
-      };
-    }
-  }
 }
 
 vim.api.nvim_create_autocmd('LspAttach', {
