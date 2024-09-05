@@ -63,7 +63,11 @@ return require('packer').startup({function()
   use {'tzachar/cmp-tabnine', run='./install.sh', requires = 'hrsh7th/nvim-cmp'}
 
   -- rust
-  use 'simrat39/rust-tools.nvim'
+  -- use 'simrat39/rust-tools.nvim'
+  use {
+  'mrcjkb/rustaceanvim',
+  version = '^5', -- Recommended
+  }
   use 'rust-lang/rust.vim'
 
   -- 今いる単語をハイライト

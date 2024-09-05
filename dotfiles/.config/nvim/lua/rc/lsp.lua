@@ -36,20 +36,6 @@ lspconfig.ccls.setup {
   filetypes = { "cuda", "cpp", "c" }
 }
 
-
--- lspconfig.kotlin_language_server.setup{
---   settings = {
---     kotlin = {
---       compiler = {
---         jvm = {
---           target = "1.8";
---         }
---       };
---     };
---   }
--- }
---
-
 require'lspconfig'.rust_analyzer.setup{
   settings = {
     ["rust-analyzer"] = {
@@ -59,3 +45,16 @@ require'lspconfig'.rust_analyzer.setup{
     }
   }
 }
+
+vim.api.nvim_create_autocmd('LspAttach', {
+  group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+  callback = function(ev)
+    local bufnr = ev.buf
+    local client = vim.lsp.get_client_by_id(ev.data.client_id)
+
+    if client and client.server_capabilities.inlayHintProvider then
+      vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+    end
+
+  end,
+})
