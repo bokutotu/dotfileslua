@@ -49,7 +49,7 @@ impl std::fmt::Display for Error {
 impl std::error::Error for Error {}
 
 /// `path`から、`remove_string`を排除し、`String`としてかえす。
-fn remove_useless_path_string(remove_string: &String, path: &Path) -> String {
+fn remove_useless_path_string(remove_string: &str, path: &Path) -> String {
     path.as_os_str()
         .to_str()
         .unwrap()

@@ -133,11 +133,6 @@ cmp.setup({
 local lspconfig = require('lspconfig')
 local cmp_nvim_lsp = require('cmp_nvim_lsp')
 
--- LSPサーバーの共通設定
-local on_attach = function(client, bufnr)
-  -- ここにLSP接続時のカスタム設定を追加...
-end
-
 -- nvim-cmpとLSPの連携
 local capabilities = cmp_nvim_lsp.default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
