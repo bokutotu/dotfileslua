@@ -141,3 +141,26 @@ lspconfig.pyright.setup({
   capabilities = capabilities,
   on_attach = on_attach,
 })
+
+vim.g.rustaceanvim = {
+  tools = {
+    -- Automatically run clippy checks on save
+    enable_clippy = true,
+    -- Enable hover actions
+    hover_actions = {
+      auto_focus = true,
+    },
+  },
+  server = {
+    settings = {
+      ["rust-analyzer"] = {
+        checkOnSave = {
+          command = "clippy",
+          extraArgs = { "--", "-W", "clippy::pedantic" },
+        },
+      },
+    },
+    on_attach = on_attach,
+    capabilities = capabilities,
+  },
+}

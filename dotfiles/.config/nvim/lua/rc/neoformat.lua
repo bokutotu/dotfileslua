@@ -1,37 +1,11 @@
-local autocmd = vim.api.nvim_create_autocmd
-
-autocmd("BufWritePre", {
-    pattern = "*",
-    callback = function()
-        vim.cmd("Neoformat")
-    end
+-- Rust用の自動フォーマット設定
+vim.api.nvim_create_autocmd("BufWritePre", {
+  pattern = "*.rs",
+  callback = function()
+    vim.cmd("undojoin | Neoformat")
+  end,
+  group = vim.api.nvim_create_augroup("rust_format", { clear = true }),
 })
 
--- Rustフォーマッター（rustfmt）のパスを指定
-local rustfmt_path = "~/.cargo/bin/rustfmt"  -- 実際のrustfmtのパスに置き換えてください
-
--- Rustファイルの保存時にNeoformatを実行
-autocmd("BufWritePre", {
-    pattern = "*.rs",
-    callback = function()
-        -- Neoformatの設定を一時的に変更
-        vim.g.neoformat_rust_rustfmt = {
-            exe = rustfmt_path,
-            args = {"--edition", "2018"},
-            replace = 1
-        }
-        vim.cmd("Neoformat")
-    end
-})
-
--- その他のファイルタイプの保存時にもNeoformatを実行
-autocmd("BufWritePre", {
-    pattern = "*",
-    callback = function()
-        -- Rustファイル以外では、デフォルトの設定を使用
-        if vim.bo.filetype ~= "rust" then
-            vim.cmd("Neoformat")
-        end
-    end
-})
-
+-- Rustに対して有効なフォーマッタをrustfmtに設定
+vim.g.neoformat_enabled_rust = { "rustfmt" }
