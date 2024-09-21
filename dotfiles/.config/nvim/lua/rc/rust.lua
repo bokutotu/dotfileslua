@@ -9,28 +9,6 @@ map('n', '<leader>rd', '<cmd>RustLsp renderDiagnostic current<CR>', { desc = 'ru
 local cmp_nvim_lsp = require('cmp_nvim_lsp')
 local capabilities = cmp_nvim_lsp.default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
--- vim.g.rustaceanvim = {
---   tools = {
---     -- Automatically run clippy checks on save
---     enable_clippy = true,
---     -- Enable hover actions
---     hover_actions = {
---       auto_focus = true,
---     },
---   },
---   server = {
---     settings = {
---       ["rust-analyzer"] = {
---         checkOnSave = {
---           command = "clippy",
---           extraArgs = { "--", "-W", "clippy::pedantic" },
---         },
---       },
---     },
---     on_attach = on_attach,
---     capabilities = capabilities,
---   },
--- }
 local cmp_nvim_lsp = require('cmp_nvim_lsp')
 local capabilities = cmp_nvim_lsp.default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
