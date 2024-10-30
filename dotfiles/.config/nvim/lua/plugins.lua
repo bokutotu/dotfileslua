@@ -97,7 +97,7 @@ return require('packer').startup({function()
   }
 
   -- インデントをみやすくする
-  use "lukas-reineke/indent-blankline.nvim"
+  use { 'lukas-reineke/indent-blankline.nvim', tag = 'v3.8.2' }
 
   -- コード内ファジーファインダ
   use 'yuki-yano/fuzzy-motion.vim'
