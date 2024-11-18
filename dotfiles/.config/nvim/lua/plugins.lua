@@ -65,10 +65,7 @@ return require('packer').startup({function()
 
   -- rust
   use 'simrat39/rust-tools.nvim'
-  use {
-  'mrcjkb/rustaceanvim',
-  version = '^5', -- Recommended
-  }
+  use 'mrcjkb/rustaceanvim'
   use 'rust-lang/rust.vim'
 
   -- 今いる単語をハイライト
@@ -113,7 +110,6 @@ return require('packer').startup({function()
 
   use {
     'CopilotC-Nvim/CopilotChat.nvim',
-    branch = 'canary',
     requires = {
       'github/copilot.vim',
       'nvim-lua/plenary.nvim',
