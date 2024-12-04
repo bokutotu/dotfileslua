@@ -39,7 +39,6 @@ return require('packer').startup({function()
   use 'nvim-telescope/telescope.nvim'
   use 'nvim-telescope/telescope-frecency.nvim'
 
-
   -- lsp
   use 'neovim/nvim-lspconfig'
   use 'williamboman/nvim-lsp-installer'
@@ -114,6 +113,7 @@ return require('packer').startup({function()
       'github/copilot.vim',
       'nvim-lua/plenary.nvim',
     },
+    branch = 'main',
     opts = {
       debug = true,
     }
