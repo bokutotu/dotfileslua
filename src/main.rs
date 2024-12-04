@@ -2,6 +2,7 @@ use dirs::home_dir;
 
 use std::convert::AsRef;
 use std::fs;
+use std::ops::Deref;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::string::FromUtf8Error;
@@ -95,9 +96,9 @@ fn mkdir_rec<P: AsRef<Path>>(dir: P) -> Result<(), Error> {
 fn check_and_mkdir<P: AsRef<Path> + std::fmt::Debug>(path: P) -> Result<(), Error> {
     if dir_exist(&path) {
         return Ok(());
-    } 
+    }
     let path = path.as_ref();
-    let Some(parent )= path.parent()else  {
+    let Some(parent) = path.parent() else {
         panic!("なんかおかしい2022年");
     };
     println!("dir {:?} is not exit. so mkdir", &parent);
@@ -162,28 +163,23 @@ fn zinit() -> Result<(), Error> {
 
 fn fzf() -> Result<(), Error> {
     let mut fzf_install_dir = home_dir().unwrap();
-    fzf_install_dir.push(".fzf.zsh");
-    if is_installed(fzf_install_dir) {
-        println!("fzf is already installed");
-        return Ok(());
-    }
+    fzf_install_dir.push(".fzf");
 
-    println!("=============================================");
-    println!("install fzf");
+    // クローン先に絶対パスを指定
     let _git = Command::new("git")
         .arg("clone")
         .arg("--depth")
         .arg("1")
         .arg("https://github.com/junegunn/fzf.git")
-        .arg("~/.fzf")
+        .arg(fzf_install_dir.to_str().unwrap())
         .output()
         .expect("Failed to clone fzf");
-    let install = Command::new("~/.fzf/install")
+
+    // インストールスクリプトのパスも絶対パスを指定
+    let install_script = fzf_install_dir.join("install");
+    let _install = Command::new(install_script.to_str().unwrap())
         .output()
         .expect("Failed to install fzf");
-    print_with_new_line(&byte_string(install.stdout)?);
-    print_with_new_line(&byte_string(install.stderr)?);
-    println!("=============================================");
     Ok(())
 }
 
