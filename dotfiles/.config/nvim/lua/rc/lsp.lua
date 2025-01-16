@@ -1,7 +1,3 @@
---------------------------------------------------------------------------------
--- lsp.lua
---------------------------------------------------------------------------------
-
 -- (1) Mason / Mason-Lspconfig のセットアップ
 require("mason").setup({
   ui = {
@@ -19,6 +15,7 @@ mason_lspconfig.setup({
   ensure_installed = {
     "clangd",
     "ts_ls",  -- 例: TypeScript 用
+    "hls",
   },
   automatic_installation = true,
 })
