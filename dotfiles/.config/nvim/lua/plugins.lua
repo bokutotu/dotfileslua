@@ -122,4 +122,73 @@ return require('packer').startup({function()
     }
   }
 
+  use {
+    'yetone/avante.nvim',
+    requires = {
+      'nvim-lua/plenary.nvim',
+      'nvim-lua/popup.nvim',
+      "stevearc/dressing.nvim",
+      'nvim-lua/plenary.nvim',
+      'MunifTanjim/nui.nvim',
+      --- The below dependencies are optional,
+      'echasnovski/mini.pick', -- for file_selector provider mini.pick
+      'nvim-telescope/telescope.nvim', -- for file_selector provider telescope
+      'hrsh7th/nvim-cmp', -- autocompletion for avante commands and mentions
+      'ibhagwan/fzf-lua', -- for file_selector provider fzf
+      'nvim-tree/nvim-web-devicons', -- or echasnovski/mini.icons
+      'zbirenbaum/copilot.lua', -- for providers='copilot'
+      {
+        -- Make sure to set this up properly if you have lazy=true
+        'MeanderingProgrammer/render-markdown.nvim',
+        opts = {
+          file_types = { "markdown", "Avante" },
+        },
+        ft = { "markdown", "Avante" },
+      },
+      {
+        -- support for image pasting
+        'HakonHarnes/img-clip.nvim',
+        opts = {
+          -- recommended settings
+          default = {
+            embed_image_as_base64 = false,
+            prompt_for_file_name = false,
+            drag_and_drop = {
+              insert_mode = true,
+            },
+            -- required for Windows users
+            use_absolute_path = true,
+          },
+        },
+      },
+    },
+  }
+  -- use {
+  --   'yetone/avante.nvim',
+  --   requires = {
+  --     'nvim-treesitter/nvim-treesitter',
+  --     'stevearc/dressing.nvim',
+  --     'nvim-lua/plenary.nvim',
+  --     'MunifTanjim/nui.nvim',
+  --     'nvim-tree/nvim-web-devicons',
+  --     'zbirenbaum/copilot.lua',
+  --     {
+  --       'HakonHarnes/img-clip.nvim',
+  --       config = function()
+  --         require('img-clip').setup({
+  --           -- your config
+  --         })
+  --       end
+  --     },
+  --     {
+  --       'MeanderingProgrammer/render-markdown.nvim',
+  --       config = function()
+  --         require('render-markdown').setup({
+  --           file_types = { "markdown", "Avante" }
+  --         })
+  --       end
+  --     }
+  --   },
+  -- }
+
 end, config = {compile_path = util.join_paths(vim.fn.stdpath('config'), 'packer_compiled.vim')}});
