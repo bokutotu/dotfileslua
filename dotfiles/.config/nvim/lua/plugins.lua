@@ -122,6 +122,15 @@ return require('packer').startup({function()
     }
   }
 
+  -- use {
+  --   'bokutotu/PromptCraft.nvim',
+  --   requires = {
+  --     'nvim-lua/plenary.nvim',
+  --     'nvim-telescope/telescope.nvim',
+  --     'MunifTanjim/nui.nvim',
+  --   }
+  -- }
+
   use {
     'yetone/avante.nvim',
     requires = {
@@ -163,32 +172,5 @@ return require('packer').startup({function()
       },
     },
   }
-  -- use {
-  --   'yetone/avante.nvim',
-  --   requires = {
-  --     'nvim-treesitter/nvim-treesitter',
-  --     'stevearc/dressing.nvim',
-  --     'nvim-lua/plenary.nvim',
-  --     'MunifTanjim/nui.nvim',
-  --     'nvim-tree/nvim-web-devicons',
-  --     'zbirenbaum/copilot.lua',
-  --     {
-  --       'HakonHarnes/img-clip.nvim',
-  --       config = function()
-  --         require('img-clip').setup({
-  --           -- your config
-  --         })
-  --       end
-  --     },
-  --     {
-  --       'MeanderingProgrammer/render-markdown.nvim',
-  --       config = function()
-  --         require('render-markdown').setup({
-  --           file_types = { "markdown", "Avante" }
-  --         })
-  --       end
-  --     }
-  --   },
-  -- }
 
 end, config = {compile_path = util.join_paths(vim.fn.stdpath('config'), 'packer_compiled.vim')}});
