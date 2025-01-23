@@ -160,7 +160,7 @@ fn zinit() -> Result<(), Error> {
     Ok(())
 }
 
-fn fzf() -> Result<(), Error> {
+fn fzf() {
     let mut fzf_install_dir = home_dir().unwrap();
     fzf_install_dir.push(".fzf");
 
@@ -179,7 +179,6 @@ fn fzf() -> Result<(), Error> {
     let _install = Command::new(install_script.to_str().unwrap())
         .output()
         .expect("Failed to install fzf");
-    Ok(())
 }
 
 fn ripgrep() -> Result<(), Error> {
@@ -200,7 +199,7 @@ fn main() -> Result<(), Error> {
     let files = dir_traversal(&dofiles_path).unwrap();
     let home_dir = home_dir().unwrap();
     zinit()?;
-    fzf()?;
+    fzf();
     ripgrep()?;
     for path in files {
         let mut new_path = home_dir.clone();
