@@ -1,3 +1,4 @@
+vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
 -- (1) Mason / Mason-Lspconfig のセットアップ
 require("mason").setup({
   ui = {
