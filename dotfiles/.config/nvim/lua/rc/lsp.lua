@@ -89,55 +89,12 @@ local function cpp_find_root_dir(fname)
   return vim.fn.getcwd()
 end
 
--- ccls の設定
-local function ccls_on_new_config(new_config, new_root_dir)
-  -- Check for .ccls config file
-  local ccls_config_path = new_root_dir .. "/.ccls"
-  local ccls_yaml_path = new_root_dir .. "/.ccls.yaml"
-  local ccls_json_path = new_root_dir .. "/.ccls.json"
-  
-  -- Set init_options if they don't exist
-  if not new_config.init_options then
-    new_config.init_options = {}
-  end
-  
-  -- Load .ccls file (compilation database format)
-  if vim.fn.filereadable(ccls_config_path) == 1 then
-    print("Loading ccls config from: " .. ccls_config_path)
-    -- Let ccls know to look for the .ccls file
-    new_config.init_options.compilationDatabaseDirectory = new_root_dir
-    new_config.init_options.compilationDatabaseCommand = "cat " .. ccls_config_path
-  end
-  
-  -- Load .ccls.yaml if it exists
-  if vim.fn.filereadable(ccls_yaml_path) == 1 then
-    print("Loading ccls config from: " .. ccls_yaml_path)
-    -- File exists, tell ccls to use it
-    new_config.init_options.configFile = ccls_yaml_path
-  end
-  
-  -- Load .ccls.json if it exists (higher priority than yaml)
-  if vim.fn.filereadable(ccls_json_path) == 1 then
-    print("Loading ccls config from: " .. ccls_json_path)
-    -- File exists, tell ccls to use it
-    new_config.init_options.configFile = ccls_json_path
-  end
-end
-
+-- 簡素化したccls設定
 local ccls_setup = {
   on_attach = on_attach,
   capabilities = capabilities,
   cmd = { ccls_path },
   root_dir = cpp_find_root_dir,
-  on_new_config = ccls_on_new_config,
-  init_options = {
-    cache = {
-      directory = vim.fn.stdpath('cache') .. "/ccls-cache",
-    },
-    clang = {
-      excludeArgs = { "-frounding-math" },
-    },
-  },
 }
 
 --------------------------------------------------------------------------------
