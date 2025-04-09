@@ -98,13 +98,56 @@ local ccls_setup = {
 }
 
 --------------------------------------------------------------------------------
--- (B) ts_ls (TypeScript) の設定 (例)
+-- (B) Metals (Scala) インストール確認 & セットアップ用関数
+--------------------------------------------------------------------------------
+local function ensure_metals_installed()
+  if vim.fn.executable("metals") == 1 then
+    return true -- 既にインストール済み
+  end
+
+  print("Metals not found. Attempting to install using coursier...")
+  -- coursier が PATH にあることを前提とする
+  local cmd = "cs install metals"
+  local output = vim.fn.system(cmd)
+
+  if vim.v.shell_error ~= 0 then
+    print("Failed to install Metals using coursier. Please install it manually or ensure 'cs' is in your PATH.")
+    print("Coursier output:\n" .. output)
+    return false
+  end
+
+  -- 再度確認
+  if vim.fn.executable("metals") == 1 then
+    print("Metals successfully installed via coursier.")
+    return true
+  else
+    print("Installation command seemed successful, but 'metals' executable not found. Check coursier setup.")
+    print("Coursier output:\n" .. output)
+    return false
+  end
+end
+
+--------------------------------------------------------------------------------
+-- (C) ts_ls (TypeScript) の設定 (例)
 --------------------------------------------------------------------------------
 
 local ts_ls_setup = {
   on_attach = on_attach,
   capabilities = capabilities,
   filetypes = { "typescript", "javascript", "typescriptreact", "javascriptreact" },
+}
+
+--------------------------------------------------------------------------------
+-- (C) Metals (Scala) の設定 (lspconfig で直接)
+--------------------------------------------------------------------------------
+local metals_setup = {
+  on_attach = on_attach,
+  capabilities = capabilities,
+  -- Metals はプロジェクトルートの検出に build.sbt や .metals ディレクトリなどを利用します
+  root_dir = util.root_pattern("build.sbt", ".metals", "pom.xml", "build.sc"),
+  -- 必要に応じて Metals 固有の設定を追加
+  -- settings = { ... }
+  -- cmd = { "path/to/metals" } -- PATHが通っていない場合など
 }
 
 --------------------------------------------------------------------------------
@@ -131,6 +174,11 @@ if use_ccls then
   lspconfig.ccls.setup(ccls_setup)
 end
 
+-- Metals の設定 (lspconfig で直接) - インストール確認後
+if ensure_metals_installed() then
+  lspconfig.metals.setup(metals_setup)
+end
+
 --------------------------------------------------------------------------------
 -- (4) LspAttach イベント (inlay hint など)
 --------------------------------------------------------------------------------
@@ -149,4 +197,3 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end
   end,
 })
-
