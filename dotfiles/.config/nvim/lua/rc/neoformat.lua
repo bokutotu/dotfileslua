@@ -1,7 +1,7 @@
 -- Neoformatでrustfmtにエディション2021を指定
 vim.g.neoformat_rust_rustfmt = {
     exe = "rustfmt",
-    args = {"--edition", "2021"},
+    args = {"--edition", "2024"},
     stdin = 1
 }
 
