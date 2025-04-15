@@ -57,7 +57,6 @@ local mason_lspconfig = require("mason-lspconfig")
 mason_lspconfig.setup({
   ensure_installed = {
     "ts_ls",  -- 例: TypeScript 用
-    "hls",    -- 例: Haskell 用
   },
   automatic_installation = true,
 })
@@ -145,9 +144,6 @@ local metals_setup = {
   capabilities = capabilities,
   -- Metals はプロジェクトルートの検出に build.sbt や .metals ディレクトリなどを利用します
   root_dir = util.root_pattern("build.sbt", ".metals", "pom.xml", "build.sc"),
-  -- 必要に応じて Metals 固有の設定を追加
-  -- settings = { ... }
-  -- cmd = { "path/to/metals" } -- PATHが通っていない場合など
 }
 
 --------------------------------------------------------------------------------
@@ -166,6 +162,34 @@ mason_lspconfig.setup_handlers({
   -- ts_ls: 個別設定
   ["ts_ls"] = function()
     lspconfig.ts_ls.setup(ts_ls_setup)
+  end,
+
+  -- hls: Custom setup to prioritize PATH or ghcup
+  ["hls"] = function()
+    local hls_path = nil
+    local hls_cmd = "haskell-language-server"
+    local ghcup_hls_path = vim.fn.expand("~/.ghcup/bin/haskell-language-server")
+
+    -- 1. Check PATH
+    if vim.fn.executable(hls_cmd) == 1 then
+      hls_path = hls_cmd -- Use the command name directly if in PATH
+      print("Using haskell-language-server found in PATH.")
+    -- 2. Check ghcup path
+    elseif vim.fn.executable(ghcup_hls_path) == 1 then
+      hls_path = ghcup_hls_path
+      print("Using haskell-language-server found in ghcup path: " .. hls_path)
+    else
+      print("haskell-language-server not found in PATH or ghcup path (~/.ghcup/bin). Please install it.")
+      return -- Don't setup if not found
+    end
+
+    -- Setup hls with the found path
+    lspconfig.hls.setup({
+      on_attach = on_attach,
+      capabilities = capabilities,
+      cmd = { hls_path, "--lsp" }, -- Pass --lsp argument
+      root_dir = util.root_pattern("*.cabal", "stack.yaml", "hie.yaml", ".ghci", "package.yaml") -- Common Haskell project markers
+    })
   end,
 })
 
