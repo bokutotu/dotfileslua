@@ -8,7 +8,8 @@ augroup fileTypeIndent
     autocmd BufNewFile,BufRead *.xaml setlocal tabstop=4 softtabstop=4 shiftwidth=4
     autocmd BufNewFile,BufRead *.lua setlocal tabstop=2 softtabstop=2 shiftwidth=2
 
-    autocmd BufNewFile,BufRead *.hs setlocal tabstop=4 softtabstop=4 shiftwidth=4
+    autocmd BufNewFile,BufRead *.hs setlocal tabstop=2 softtabstop=2 shiftwidth=2
+    autocmd BufNewFile,BufRead *.hsc setlocal tabstop=2 softtabstop=2 shiftwidth=2
 
     autocmd BufNewFile,BufRead *.cu setlocal tabstop=4 softtabstop=4 shiftwidth=4
     autocmd BufNewFile,BufRead *.c  setlocal tabstop=4 softtabstop=4 shiftwidth=4
