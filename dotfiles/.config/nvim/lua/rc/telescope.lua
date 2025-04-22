@@ -10,7 +10,15 @@ local function map(mode, lhs, rhs, opts)
 end
 
 -- Telescope keybindings
-map('n', '<leader>ff', '<Cmd>Telescope git_files find_command=rg,--ignore,--hidden,--files prompt_prefix=🔍<CR>', { desc = 'telescope: find file' })
+map('n', '<leader>ff', '', {
+  desc = 'telescope: git files (current dir only)',
+  callback = function()
+    require('telescope.builtin').find_files({
+      cwd = vim.fn.expand('%:p:h'),
+      find_command = { 'git', 'ls-files', '.' },
+    })
+  end,
+})
 map('n', '<leader>jj', '<Cmd>Telescope buffers<CR>', { desc = 'telescope find buffers' })
 
 
