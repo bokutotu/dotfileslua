@@ -11,11 +11,10 @@ end
 
 -- Telescope keybindings
 map('n', '<leader>ff', '', {
-  desc = 'telescope: git files (current dir only)',
+  desc = 'telescope: git files (from cwd)',
   callback = function()
     require('telescope.builtin').find_files({
-      cwd = vim.fn.expand('%:p:h'),
-      find_command = { 'git', 'ls-files', '.' },
+      find_command = { 'git', 'ls-files' },
     })
   end,
 })

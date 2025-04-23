@@ -153,10 +153,13 @@ local metals_setup = {
 mason_lspconfig.setup_handlers({
   -- デフォルトハンドラ: 個別指定していないサーバ
   function(server_name)
-    lspconfig[server_name].setup({
-      on_attach = on_attach,
-      capabilities = capabilities,
-    })
+    -- Haskell Language ServerはMasonで管理しない
+    if server_name ~= "hls" then
+      lspconfig[server_name].setup({
+        on_attach = on_attach,
+        capabilities = capabilities,
+      })
+    end
   end,
 
   -- ts_ls: 個別設定
@@ -170,12 +173,21 @@ if use_ccls then
   lspconfig.ccls.setup(ccls_setup)
 end
 
--- Haskell Language Server: Mason関係なくシステムのものを直接使用
-lspconfig.hls.setup({
+-- Haskell Language Serverの設定
+local hls_setup = {
   on_attach = on_attach,
   capabilities = capabilities,
   cmd = {"haskell-language-server-wrapper", "--lsp"},
-  root_dir = util.root_pattern("*.cabal", "stack.yaml", "hie.yaml", ".ghci", "package.yaml")
+  root_dir = util.root_pattern("*.cabal", "stack.yaml", "hie.yaml", ".ghci", "package.yaml"),
+  filetypes = {"haskell", "lhaskell"},
+}
+
+-- Haskellファイルが開かれた時にHLSを起動
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = {"haskell", "lhaskell"},
+  callback = function()
+    lspconfig.hls.setup(hls_setup)
+  end,
 })
 
 -- Metals の設定 (lspconfig で直接) - インストール確認後
