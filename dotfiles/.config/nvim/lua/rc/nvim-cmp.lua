@@ -164,3 +164,4 @@ vim.g.rustaceanvim = {
     capabilities = capabilities,
   },
 }
+
