@@ -159,4 +159,10 @@ return require('packer').startup({function()
     },
   }
 
+  use {
+    'mrcjkb/haskell-tools.nvim',
+    branch = 'master',
+    requires = { 'nvim-lua/plenary.nvim' },
+  }
+
 end, config = {compile_path = util.join_paths(vim.fn.stdpath('config'), 'packer_compiled.vim')}});
