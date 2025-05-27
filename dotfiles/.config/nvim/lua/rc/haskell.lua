@@ -1,4 +1,3 @@
--- rc/haskell.lua
 local api = vim.api
 
 local function map(mode, lhs, rhs, opts)
@@ -30,17 +29,48 @@ vim.g.haskell_tools = {
       ".ghci",
       "package.yaml"
     ),
+    settings = {
+      haskell = { checkParents = "CheckOnSave" },
+    },
   },
-  tools = { codeLens = { autoRefresh = true } },
+  tools = {
+    codeLens = { autoRefresh = true },
+  },
 }
 
 api.nvim_create_autocmd("LspAttach", {
-  group = api.nvim_create_augroup("HaskellInlayHint", { clear = true }),
+  group = api.nvim_create_augroup("HaskellSaveActions", { clear = true }),
   callback = function(ev)
     local client = vim.lsp.get_client_by_id(ev.data.client_id)
-    if client and client.server_capabilities.inlayHintProvider then
-      vim.lsp.inlay_hint.enable(true, { buf = ev.buf })
+
+    local bufnr = ev.buf
+    local ft    = vim.bo[bufnr].filetype
+
+    if (ft == "haskell" or ft == "lhaskell")
+       and client.server_capabilities.inlayHintProvider
+       and vim.lsp.inlay_hint.enable      -- API が存在するか確認
+    then
+      vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
     end
+
+    if client and client.server_capabilities.documentFormattingProvider then
+      api.nvim_create_autocmd("BufWritePre", {
+        buffer = ev.buf,
+        callback = function()
+          vim.lsp.buf.format({ async = false })
+        end,
+      })
+    end
+
+    api.nvim_create_autocmd("BufWritePost", {
+      buffer = ev.buf,
+      callback = function()
+        vim.defer_fn(function()
+          vim.diagnostic.reset(nil, ev.buf)
+          vim.diagnostic.show(nil, ev.buf)
+        end, 100)
+      end,
+    })
   end,
 })
 
