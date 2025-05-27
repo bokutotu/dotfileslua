@@ -1,15 +1,26 @@
 local function map(mode, lhs, rhs, opts)
-    local options = { noremap = true, silent = true }
-    if opts then options = vim.tbl_extend('force', options, opts) end
-    vim.api.nvim_set_keymap(mode, lhs, rhs, options)
+  local options = { noremap = true, silent = true }
+  if opts then options = vim.tbl_extend('force', options, opts) end
+  vim.api.nvim_set_keymap(mode, lhs, rhs, options)
 end
 
-map('n', '<leader>rd', '<cmd>RustLsp renderDiagnostic current<CR>', { desc = 'rust: render diagnostic' })
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "rust",
+  callback = function()
+    -- Buffer-local so it is active only in the Rust buffer
+    map(
+      "n",
+      "<leader>rd",
+      "<cmd>RustLsp renderDiagnostic current<CR>",
+      { desc = "rust: render diagnostic", buffer = true }
+    )
+  end,
+})
 
-local cmp_nvim_lsp = require('cmp_nvim_lsp')
+local cmp_nvim_lsp = require("cmp_nvim_lsp")
 local capabilities = cmp_nvim_lsp.default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
-local cmp_nvim_lsp = require('cmp_nvim_lsp')
+local cmp_nvim_lsp = require("cmp_nvim_lsp")
 local capabilities = cmp_nvim_lsp.default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
 local util = require("lspconfig.util")
@@ -26,7 +37,7 @@ vim.g.rustaceanvim = {
     reload_workspace_from_cargo_toml = true,
   },
   server = {
-    standalone = true, -- This allows rustaceanvim to manage its own rust-analyzer instance
+    standalone = true,
     on_attach = on_attach,
     settings = {
       ["rust-analyzer"] = {
@@ -37,7 +48,6 @@ vim.g.rustaceanvim = {
         cargo = {
           allFeatures = true,
         },
-        -- Add more rust-analyzer settings as needed
       },
     },
     capabilities = capabilities,
@@ -48,7 +58,7 @@ vim.g.rustaceanvim = {
         local git_registry = util.path.join(cargo_home, "git", "checkouts")
         local rustup_home = os.getenv("RUSTUP_HOME") or util.path.join(vim.env.HOME, ".rustup")
         local toolchains = util.path.join(rustup_home, "toolchains")
-        
+
         for _, item in ipairs({ toolchains, registry, git_registry }) do
           if util.path.is_descendant(item, path) then
             return true
@@ -66,3 +76,4 @@ vim.g.rustaceanvim = {
     end,
   },
 }
+

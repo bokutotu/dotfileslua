@@ -29,27 +29,6 @@ local function ensure_ccls_installed()
   return fn.executable(bin) == 1 and {true, bin} or {false}
 end
 
-local function ensure_metals_installed()
-  if fn.executable("metals") == 1 then return true end
-  print("Metals not found. Installing with coursier…")
-  local out = fn.system("cs install metals")
-  if vim.v.shell_error ~= 0 or fn.executable("metals") ~= 1 then
-    print("Metals install failed:\n" .. out) ; return false
-  end
-  return true
-end
-
--- =============================================================================
--- 1. Mason（※ HLS は完全除外）
--- =============================================================================
-require("mason").setup({
-  ui = { icons = { package_installed = "✓", package_pending = "➜", package_uninstalled = "✗" } },
-})
-require("mason-lspconfig").setup({
-  ensure_installed       = { "ts_ls" },       -- Mason 管理に任せるのはこれだけ
-  automatic_installation = { exclude = { "hls" } },  -- HLS をスキップ
-})
-
 -- =============================================================================
 -- 2. LSPConfig – 個別に手動セットアップ
 -- =============================================================================
@@ -80,15 +59,6 @@ lspconfig.hls.setup({
                                    ".ghci", "package.yaml"),
   filetypes    = { "haskell", "lhaskell" },
 })
-
--- 2.4 Metals
-if ensure_metals_installed() then
-  lspconfig.metals.setup({
-    on_attach    = on_attach,
-    capabilities = capabilities,
-    root_dir     = util.root_pattern("build.sbt", ".metals", "pom.xml", "build.sc"),
-  })
-end
 
 -- =============================================================================
 -- 4. hsc2hs 自動生成 → LSP を .hs に付け替える
