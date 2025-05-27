@@ -22,19 +22,25 @@ vim.g.haskell_tools = {
   hls = {
     on_attach    = on_attach,
     capabilities = capabilities,
+
     root_dir     = require("lspconfig.util").root_pattern(
-      "*.cabal",
-      "stack.yaml",
-      "hie.yaml",
-      ".ghci",
-      "package.yaml"
+      "*.cabal", "stack.yaml", "hie.yaml", ".ghci", "package.yaml"
     ),
+
     settings = {
-      haskell = { checkParents = "CheckOnSave" },
+      haskell = {
+        checkParents = "CheckOnSave",
+
+        plugin = {
+          importLens         = { globalOn = false },
+          ["explicit-fields"] = { globalOn = false },
+        },
+      },
     },
   },
+
   tools = {
-    codeLens = { autoRefresh = true },
+    codeLens = { autoRefresh = false },
   },
 }
 
@@ -42,33 +48,23 @@ api.nvim_create_autocmd("LspAttach", {
   group = api.nvim_create_augroup("HaskellSaveActions", { clear = true }),
   callback = function(ev)
     local client = vim.lsp.get_client_by_id(ev.data.client_id)
+    local bufnr  = ev.buf
 
-    local bufnr = ev.buf
-    local ft    = vim.bo[bufnr].filetype
-
-    if (ft == "haskell" or ft == "lhaskell")
-       and client.server_capabilities.inlayHintProvider
-       and vim.lsp.inlay_hint.enable      -- API が存在するか確認
-    then
-      vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
-    end
-
-    if client and client.server_capabilities.documentFormattingProvider then
+    if client.server_capabilities.documentFormattingProvider then
       api.nvim_create_autocmd("BufWritePre", {
-        buffer = ev.buf,
+        buffer = bufnr,
         callback = function()
-          vim.lsp.buf.format({ async = false })
+          vim.lsp.buf.format({ async = true })
         end,
       })
     end
 
     api.nvim_create_autocmd("BufWritePost", {
-      buffer = ev.buf,
+      buffer = bufnr,
       callback = function()
         vim.defer_fn(function()
-          vim.diagnostic.reset(nil, ev.buf)
-          vim.diagnostic.show(nil, ev.buf)
-        end, 100)
+          vim.diagnostic.show(nil, bufnr)
+        end, 100) -- 100 ms 後に描画
       end,
     })
   end,
