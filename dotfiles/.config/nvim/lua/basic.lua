@@ -1,3 +1,5 @@
+vim.lsp.buf.format { async = true }
+
 -- 相対的な行を表示
 vim.opt.relativenumber = true
 
