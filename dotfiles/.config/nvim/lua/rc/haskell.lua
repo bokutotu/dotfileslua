@@ -21,14 +21,14 @@ api.nvim_create_autocmd("FileType", {
 -- ❶ フォーマッタ（imports 整理込み）
 ---------------------------------------------------------------------
 local function format_hls(bufnr)
-  -- imports の整理を先に走らせる
+  -- imports の整理
   local enc = (vim.lsp.get_clients({ bufnr = bufnr })[1] or {}).offset_encoding or "utf-8"
   local p   = vim.lsp.util.make_range_params(nil, enc)
   p.context = { only = { "source.organizeImports" } }
   vim.lsp.buf_request_sync(bufnr, "textDocument/codeAction", p, 1000)
 
-  -- 本体フォーマット
-  vim.lsp.buf.format { bufnr = bufnr, async = false, timeout_ms = 3000 }
+  -- stylish-haskell で本体フォーマット
+  vim.lsp.buf.format { bufnr = bufnr, async = false, timeout_ms = 5000 }
 end
 
 ---------------------------------------------------------------------
@@ -46,7 +46,6 @@ local function goto_def()
       end
     end
   end
-  -- LSP が見つけられなかった場合は tags にフォールバック
   vim.cmd("silent! tag " .. vim.fn.expand("<cword>"))
 end
 
@@ -83,18 +82,23 @@ vim.g.haskell_tools = {
       haskell = {
         diagnosticsOnChange = false,
         checkParents        = "CheckOnSave",
+
+        -- ★★ ここで provider を指定 ★★
+        formattingProvider  = "stylish-haskell",
+
         plugin = {
-          hlint    = { globalOn = true },
-          fourmolu = { globalOn = true },
-          ormolu   = { globalOn = false },
+          ["stylish-haskell"] = { globalOn = true },
+          fourmolu            = { globalOn = false },
+          ormolu              = { globalOn = false },
+          hlint               = { globalOn = true },
         },
       },
     },
   },
   tools = {
-    -- fast-tags を自動で走らせる
     generate_tags = true,
     codeLens      = { autoRefresh = false },
   },
 }
+
 
