@@ -104,3 +104,8 @@ eval "$(pyenv init --path)"; eval "$(pyenv init -)"
 alias vi='nvim'
 [[ -f ~/.alias.zsh ]] && source ~/.alias.zsh
 
+
+export GIT_EDITOR="nvim"
+# or
+export EDITOR="nvim"
+
