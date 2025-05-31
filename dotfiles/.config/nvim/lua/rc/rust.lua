@@ -6,13 +6,12 @@ end
 
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "rust",
-  callback = function()
-    -- Buffer-local so it is active only in the Rust buffer
-    map(
+  callback = function(ev)
+    vim.keymap.set(
       "n",
       "<leader>rd",
       "<cmd>RustLsp renderDiagnostic current<CR>",
-      { desc = "rust: render diagnostic", buffer = true }
+      { desc = "rust: render diagnostic", buffer = ev.buf }
     )
   end,
 })
@@ -74,6 +73,22 @@ vim.g.rustaceanvim = {
       return util.root_pattern("Cargo.toml", "rust-project.json")(fname)
         or util.find_git_ancestor(fname)
     end,
+  },
+}
+
+vim.g.rustaceanvim = {
+  tools  = { enable_clippy = true, hover_actions = { auto_focus = true } },
+  server = {
+    settings = {
+      ["rust-analyzer"] = {
+        checkOnSave = {
+          command   = "clippy",
+          extraArgs = { "--", "-W", "clippy::pedantic" },
+        },
+      },
+    },
+    on_attach   = on_attach,
+    capabilities = capabilities,
   },
 }
 
