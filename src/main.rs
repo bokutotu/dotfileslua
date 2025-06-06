@@ -163,22 +163,35 @@ fn zinit() -> Result<(), Error> {
 fn fzf() {
     let mut fzf_install_dir = home_dir().unwrap();
     fzf_install_dir.push(".fzf");
+    println!("fzf install dir is {fzf_install_dir:?}");
 
-    // クローン先に絶対パスを指定
-    let _git = Command::new("git")
-        .arg("clone")
-        .arg("--depth")
-        .arg("1")
-        .arg("https://github.com/junegunn/fzf.git")
-        .arg(fzf_install_dir.to_str().unwrap())
+    // check if fzf installed
+    if is_installed(&fzf_install_dir) {
+        println!("fzf is already installed");
+        return;
+    }
+
+    println!("try to install fzf");
+    let command = Command::new("git")
+        .args([
+            "clone",
+            "--depth",
+            "1",
+            "https://github.com/junegunn/fzf.git",
+            "~/.fzf",
+        ])
         .output()
         .expect("Failed to clone fzf");
-
-    // インストールスクリプトのパスも絶対パスを指定
-    let install_script = fzf_install_dir.join("install");
-    let _install = Command::new(install_script.to_str().unwrap())
+    print_with_new_line(&byte_string(command.stderr).unwrap());
+    print_with_new_line(&byte_string(command.stdout).unwrap());
+    let command = Command::new("~/.fzf/install")
         .output()
         .expect("Failed to install fzf");
+    print_with_new_line(&byte_string(command.stderr).unwrap());
+    print_with_new_line(&byte_string(command.stdout).unwrap());
+    println!("=============================================");
+
+    println!("installed fzf");
 }
 
 fn ripgrep() -> Result<(), Error> {
