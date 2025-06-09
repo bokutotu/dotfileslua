@@ -43,39 +43,40 @@ map('n', '<S-F12>', '<C-t>')
 --──────────────────────────────────────────────────────────────
 -- 4. 保存時フォーマット : fourmolu → stylish-haskell
 --──────────────────────────────────────────────────────────────
+local function echo_err(prefix, lines)
+  local msg = prefix .. (next(lines) and (': ' .. table.concat(lines, '\n')) or '')
+  api.nvim_echo({ { msg, 'ErrorMsg' } }, false, {})
+end
+
 local function format_hs(bufnr)
   bufnr = bufnr or 0
   local file = api.nvim_buf_get_name(bufnr); if file == '' then return end
 
   if vim.fn.executable('fourmolu') ~= 1 or vim.fn.executable('stylish-haskell') ~= 1 then
-    vim.notify('fourmolu / stylish-haskell not found in PATH', vim.log.levels.WARN); return
+    echo_err('format-hs', { 'fourmolu / stylish-haskell not found in PATH' }); return
   end
 
-  -- 現バッファ内容を temp ファイルへ
-  local tmp = vim.fn.tempname() .. '.hs'
-  vim.fn.writefile(api.nvim_buf_get_lines(bufnr, 0, -1, false), tmp)
-
-  -- ❶ fourmolu -i
-  vim.fn.system({ 'fourmolu', '-i', tmp })
+  -- ❶ fourmolu （stdin 経由で実ファイルパスを教える）
+  local src  = table.concat(api.nvim_buf_get_lines(bufnr, 0, -1, false), '\n')
+  local four = vim.fn.systemlist({ 'fourmolu', '--stdin-input-file', file }, src)
   if vim.v.shell_error ~= 0 then
-    vim.notify('fourmolu failed', vim.log.levels.ERROR); return
+    echo_err('fourmolu', four); return
   end
 
-  -- ❷ stylish-haskell -i
-  vim.fn.system({ 'stylish-haskell', '-i', tmp })
+  -- ❷ stylish-haskell（stdin）
+  local styl = vim.fn.systemlist({ 'stylish-haskell' }, table.concat(four, '\n'))
   if vim.v.shell_error ~= 0 then
-    vim.notify('stylish-haskell failed', vim.log.levels.ERROR); return
+    echo_err('stylish-haskell', styl); return
   end
 
-  -- 変更内容を読み戻し
-  local new = vim.fn.readfile(tmp)
+  -- 変更内容をバッファへ
+  local new = styl
   local old = api.nvim_buf_get_lines(bufnr, 0, -1, false)
   if table.concat(new, '\n') ~= table.concat(old, '\n') then
     local view = vim.fn.winsaveview()
     api.nvim_buf_set_lines(bufnr, 0, -1, false, new)
     vim.fn.winrestview(view)
   end
-  vim.fn.delete(tmp)
 end
 
 api.nvim_create_autocmd('BufWritePre', {
@@ -121,4 +122,3 @@ api.nvim_create_autocmd('BufWritePost', {
     end
   end,
 })
-

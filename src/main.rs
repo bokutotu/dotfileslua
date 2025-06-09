@@ -161,7 +161,8 @@ fn zinit() -> Result<(), Error> {
 }
 
 fn fzf() {
-    let fzf_install_dir = "~/.fzf";
+    let mut fzf_install_dir = home_dir().unwrap();
+    fzf_install_dir.push(".fzf");
     // check if fzf installed
     if is_installed(&fzf_install_dir) {
         println!("fzf is already installed");
@@ -175,13 +176,16 @@ fn fzf() {
             "--depth",
             "1",
             "https://github.com/junegunn/fzf.git",
-            "~/.fzf",
+            &fzf_install_dir.to_string_lossy(),
         ])
         .output()
         .expect("Failed to clone fzf");
     print_with_new_line(&byte_string(command.stderr).unwrap());
     print_with_new_line(&byte_string(command.stdout).unwrap());
-    let command = Command::new("~/.fzf/install")
+    
+    let mut install_script = fzf_install_dir.clone();
+    install_script.push("install");
+    let command = Command::new(&install_script)
         .output()
         .expect("Failed to install fzf");
     print_with_new_line(&byte_string(command.stderr).unwrap());
