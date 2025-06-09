@@ -73,6 +73,12 @@ function fish_prompt
 end
 
 if status --is-interactive
+    # Load machine-specific environment variables
+    set -l env_file $HOME/.config/fish/env.fish
+    if test -f $env_file
+        source $env_file
+    end
+    
     # Set default editor to nvim
     set -gx EDITOR nvim
     set -gx VISUAL nvim
