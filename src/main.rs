@@ -161,10 +161,7 @@ fn zinit() -> Result<(), Error> {
 }
 
 fn fzf() {
-    let mut fzf_install_dir = home_dir().unwrap();
-    fzf_install_dir.push(".fzf");
-    println!("fzf install dir is {fzf_install_dir:?}");
-
+    let fzf_install_dir = "~/.fzf";
     // check if fzf installed
     if is_installed(&fzf_install_dir) {
         println!("fzf is already installed");
@@ -207,6 +204,33 @@ fn ripgrep() -> Result<(), Error> {
     Ok(())
 }
 
+fn lsd() -> Result<(), Error> {
+    println!("=============================================");
+    println!("install lsd");
+    let command = Command::new("cargo")
+        .args(["install", "lsd"])
+        .output()
+        .expect("failed to install lsd");
+    print_with_new_line(&byte_string(command.stderr)?);
+    print_with_new_line(&byte_string(command.stdout)?);
+    println!("=============================================");
+    Ok(())
+}
+
+fn deno() -> Result<(), Error> {
+    println!("=============================================");
+    println!("install deno");
+    let command = Command::new("sh")
+        .arg("-c")
+        .arg("curl -fsSL https://deno.land/install.sh | sh")
+        .output()
+        .expect("failed to install deno");
+    print_with_new_line(&byte_string(command.stderr)?);
+    print_with_new_line(&byte_string(command.stdout)?);
+    println!("=============================================");
+    Ok(())
+}
+
 fn main() -> Result<(), Error> {
     let dofiles_path = "./dotfiles".to_string();
     let files = dir_traversal(&dofiles_path).unwrap();
@@ -214,6 +238,8 @@ fn main() -> Result<(), Error> {
     zinit()?;
     fzf();
     ripgrep()?;
+    lsd()?;
+    deno()?;
     for path in files {
         let mut new_path = home_dir.clone();
         new_path.push(remove_useless_path_string(&dofiles_path, &path));
