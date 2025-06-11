@@ -45,7 +45,7 @@ function fish_prompt
     
     # Colors
     set -l normal (set_color normal)
-    set -l blue (set_color blue)
+    set -l blue (set_color cyan)
     set -l green (set_color green)
     set -l red (set_color red)
     set -l yellow (set_color yellow)
