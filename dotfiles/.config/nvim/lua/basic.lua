@@ -80,3 +80,55 @@ vim.api.nvim_command("set fileformats=unix,dos,mac")
 vim.api.nvim_command("set fileencodings=utf-8,sjis")
 
 vim.api.nvim_command("set tags=.tags;")
+
+-- Reload Neovim command
+vim.api.nvim_create_user_command('ReloadAll', function()
+    -- Save all buffers
+    vim.cmd('wa')
+    
+    -- Save window dimensions
+    local lines = vim.o.lines
+    local columns = vim.o.columns
+    
+    -- Clear all autocommands
+    vim.cmd('autocmd!')
+    
+    -- Unload all loaded Lua modules
+    for name, _ in pairs(package.loaded) do
+        if name:match('^basic') or name:match('^plugins') or name:match('^rc') or name:match('^indent') then
+            package.loaded[name] = nil
+        end
+    end
+    
+    -- Unload packer compiled file
+    package.loaded['packer_compiled'] = nil
+    
+    -- Clear all mappings
+    vim.cmd('mapclear')
+    vim.cmd('mapclear!')
+    vim.cmd('imapclear')
+    vim.cmd('vmapclear')
+    vim.cmd('xmapclear')
+    vim.cmd('smapclear')
+    vim.cmd('omapclear')
+    vim.cmd('nmapclear')
+    vim.cmd('cmapclear')
+    vim.cmd('tmapclear')
+    
+    -- Reset options to defaults
+    vim.cmd('set all&')
+    
+    -- Restore window dimensions
+    vim.o.lines = lines
+    vim.o.columns = columns
+    
+    -- Source init.lua again
+    vim.cmd('source ' .. vim.fn.stdpath('config') .. '/init.lua')
+    
+    -- Force telescope to reload its config
+    pcall(function()
+        require('telescope').setup(require('telescope').config)
+    end)
+    
+    print('Neovim configuration reloaded!')
+end, { desc = 'Reload all Neovim configuration without restarting' })
