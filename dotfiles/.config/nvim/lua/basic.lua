@@ -38,7 +38,7 @@ vim.opt.incsearch = true
 
 -- yanc to clipborad
 -- vim.api.nvim_command('set clipborad=unnamed')
-vim.g.clipborad = unnamed
+vim.g.clipboard = unnamed
 
 -- -- xで系した場合は not yank
 -- -- vim.opt.vnoremap = x
