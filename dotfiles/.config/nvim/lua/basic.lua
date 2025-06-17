@@ -93,7 +93,19 @@ vim.api.nvim_create_user_command('ReloadAll', function()
     -- Clear all autocommands
     vim.cmd('autocmd!')
     
-    -- Unload all loaded Lua modules
+    -- Store list of loaded plugin modules before clearing
+    local plugin_modules = {}
+    for name, _ in pairs(package.loaded) do
+        -- Capture all non-config modules that might be plugins
+        if not (name:match('^basic') or name:match('^plugins') or name:match('^rc') or name:match('^indent')) then
+            -- Store plugin modules to potentially reload them
+            if name:match('^[a-z]') and not name:match('^vim') and not name:match('^nvim') then
+                table.insert(plugin_modules, name)
+            end
+        end
+    end
+    
+    -- Unload all loaded Lua modules from our config
     for name, _ in pairs(package.loaded) do
         if name:match('^basic') or name:match('^plugins') or name:match('^rc') or name:match('^indent') then
             package.loaded[name] = nil
@@ -103,32 +115,29 @@ vim.api.nvim_create_user_command('ReloadAll', function()
     -- Unload packer compiled file
     package.loaded['packer_compiled'] = nil
     
-    -- Clear all mappings
-    vim.cmd('mapclear')
-    vim.cmd('mapclear!')
-    vim.cmd('imapclear')
-    vim.cmd('vmapclear')
-    vim.cmd('xmapclear')
-    vim.cmd('smapclear')
-    vim.cmd('omapclear')
-    vim.cmd('nmapclear')
-    vim.cmd('cmapclear')
-    vim.cmd('tmapclear')
-    
-    -- Reset options to defaults
-    vim.cmd('set all&')
-    
-    -- Restore window dimensions
-    vim.o.lines = lines
-    vim.o.columns = columns
+    -- Don't clear mappings - let plugins re-register them properly
+    -- This prevents loss of plugin mappings that aren't re-created on setup()
     
     -- Source init.lua again
     vim.cmd('source ' .. vim.fn.stdpath('config') .. '/init.lua')
     
-    -- Force telescope to reload its config
-    pcall(function()
-        require('telescope').setup(require('telescope').config)
-    end)
-    
-    print('Neovim configuration reloaded!')
+    -- Force re-source the packer compiled file to ensure all plugin configs are loaded
+    vim.defer_fn(function()
+        local packer_compiled = vim.fn.stdpath('config') .. '/plugin/packer_compiled.lua'
+        if vim.fn.filereadable(packer_compiled) == 1 then
+            vim.cmd('source ' .. packer_compiled)
+        end
+        
+        -- Automatically discover and re-require all rc modules
+        local rc_path = vim.fn.stdpath('config') .. '/lua/rc'
+        local rc_files = vim.fn.glob(rc_path .. '/*.lua', false, true)
+        
+        for _, file in ipairs(rc_files) do
+            local module_name = 'rc.' .. vim.fn.fnamemodify(file, ':t:r')
+            package.loaded[module_name] = nil
+            pcall(require, module_name)
+        end
+        
+        print('Neovim configuration reloaded!')
+    end, 100)
 end, { desc = 'Reload all Neovim configuration without restarting' })
