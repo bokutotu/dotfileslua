@@ -113,6 +113,11 @@ require('lspconfig').hls.setup {
   capabilities = capabilities,
   root_dir = require('lspconfig.util')
                .root_pattern('hie.yaml', '*.cabal', 'stack.yaml', '.git'),
+  on_attach = function(client, bufnr)
+    -- Disable HLS formatting to avoid conflicts with custom formatter
+    client.server_capabilities.documentFormattingProvider = false
+    client.server_capabilities.documentRangeFormattingProvider = false
+  end,
   settings = {
     haskell = {
       diagnosticsOnChange = true,
