@@ -81,63 +81,130 @@ vim.api.nvim_command("set fileencodings=utf-8,sjis")
 
 vim.api.nvim_command("set tags=.tags;")
 
--- Reload Neovim command
-vim.api.nvim_create_user_command('ReloadAll', function()
+-- Define the reload function separately so it can reference itself
+local function reload_all()
     -- Save all buffers
     vim.cmd('wa')
     
-    -- Save window dimensions
-    local lines = vim.o.lines
-    local columns = vim.o.columns
+    -- Save current buffer info
+    local current_buf = vim.api.nvim_get_current_buf()
+    local cursor_pos = vim.api.nvim_win_get_cursor(0)
+    local filetype = vim.bo.filetype
     
-    -- Clear all autocommands
-    vim.cmd('autocmd!')
+    -- Disable treesitter for all buffers before clearing
+    for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+        if vim.api.nvim_buf_is_valid(buf) and vim.api.nvim_buf_is_loaded(buf) then
+            pcall(vim.treesitter.stop, buf)
+        end
+    end
     
-    -- Store list of loaded plugin modules before clearing
-    local plugin_modules = {}
-    for name, _ in pairs(package.loaded) do
-        -- Capture all non-config modules that might be plugins
-        if not (name:match('^basic') or name:match('^plugins') or name:match('^rc') or name:match('^indent')) then
-            -- Store plugin modules to potentially reload them
-            if name:match('^[a-z]') and not name:match('^vim') and not name:match('^nvim') then
-                table.insert(plugin_modules, name)
+    -- Clear all buffer-local autocommands and variables
+    for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+        if vim.api.nvim_buf_is_valid(buf) then
+            -- Clear buffer-local autocommands
+            vim.api.nvim_clear_autocmds({ buffer = buf })
+            -- Clear buffer variables
+            for k, _ in pairs(vim.b[buf] or {}) do
+                vim.b[buf][k] = nil
             end
         end
     end
     
-    -- Unload all loaded Lua modules from our config
+    -- Store all loaded modules before unloading
+    local all_loaded_modules = {}
     for name, _ in pairs(package.loaded) do
-        if name:match('^basic') or name:match('^plugins') or name:match('^rc') or name:match('^indent') then
+        table.insert(all_loaded_modules, name)
+    end
+    
+    -- Clear all global autocommands
+    vim.cmd('autocmd!')
+    
+    -- Clear all treesitter related caches and state
+    vim.treesitter._parsers = {}
+    vim.treesitter._queries = {}
+    if vim._ts_parsers then
+        vim._ts_parsers = {}
+    end
+    if vim._ts_query_cache then
+        vim._ts_query_cache = {}
+    end
+    
+    -- Clear highlight namespace used by treesitter
+    local ts_hl_ns = vim.api.nvim_get_namespaces()['treesitter/highlighter']
+    if ts_hl_ns then
+        vim.api.nvim_buf_clear_namespace(0, ts_hl_ns, 0, -1)
+    end
+    
+    -- Unload ALL non-vim internal modules
+    for _, name in ipairs(all_loaded_modules) do
+        -- Keep only vim internal modules and lua standard library
+        if not (name:match('^vim%.') or name:match('^vim$') or name:match('^_G') or name:match('^package') or name:match('^string') or name:match('^table') or name:match('^math') or name:match('^os') or name:match('^io') or name:match('^debug') or name:match('^coroutine') or name:match('^bit')) then
             package.loaded[name] = nil
         end
     end
     
-    -- Unload packer compiled file
-    package.loaded['packer_compiled'] = nil
+    -- Clear all user commands
+    vim.cmd('comclear')
     
-    -- Don't clear mappings - let plugins re-register them properly
-    -- This prevents loss of plugin mappings that aren't re-created on setup()
+    -- Clear all keymaps
+    vim.cmd('mapclear')
+    vim.cmd('mapclear!')
+    vim.cmd('imapclear')
+    vim.cmd('vmapclear')
+    vim.cmd('xmapclear')
+    vim.cmd('smapclear')
+    vim.cmd('omapclear')
+    vim.cmd('nmapclear')
+    vim.cmd('cmapclear')
+    vim.cmd('tmapclear')
+    
+    -- Clear highlights
+    vim.cmd('highlight clear')
+    
+    -- Clear and reset options
+    vim.cmd('set all&')
+    vim.cmd('filetype off')
+    vim.cmd('syntax off')
     
     -- Source init.lua again
     vim.cmd('source ' .. vim.fn.stdpath('config') .. '/init.lua')
     
-    -- Force re-source the packer compiled file to ensure all plugin configs are loaded
+    -- Properly reinitialize the buffer
     vim.defer_fn(function()
-        local packer_compiled = vim.fn.stdpath('config') .. '/plugin/packer_compiled.lua'
-        if vim.fn.filereadable(packer_compiled) == 1 then
-            vim.cmd('source ' .. packer_compiled)
+        vim.cmd('filetype plugin indent on')
+        vim.cmd('syntax enable')
+        
+        -- Switch away and back to force full reinitialization
+        if vim.api.nvim_buf_is_valid(current_buf) then
+            -- Create a temporary empty buffer
+            local temp_buf = vim.api.nvim_create_buf(false, true)
+            vim.api.nvim_set_current_buf(temp_buf)
+            
+            -- Switch back to original buffer
+            vim.defer_fn(function()
+                vim.api.nvim_set_current_buf(current_buf)
+                -- Force filetype detection
+                if filetype and filetype ~= '' then
+                    vim.bo.filetype = ''  -- Clear first
+                    vim.defer_fn(function()
+                        vim.bo.filetype = filetype  -- Then set to trigger FileType autocmds
+                        -- Explicitly start treesitter for the buffer
+                        vim.defer_fn(function()
+                            pcall(vim.treesitter.start, current_buf, filetype)
+                        end, 50)
+                    end, 10)
+                else
+                    vim.cmd('filetype detect')
+                end
+                -- Delete temporary buffer
+                vim.api.nvim_buf_delete(temp_buf, { force = true })
+                -- Restore cursor position
+                pcall(vim.api.nvim_win_set_cursor, 0, cursor_pos)
+                print('Neovim configuration reloaded!')
+            end, 50)
         end
-        
-        -- Automatically discover and re-require all rc modules
-        local rc_path = vim.fn.stdpath('config') .. '/lua/rc'
-        local rc_files = vim.fn.glob(rc_path .. '/*.lua', false, true)
-        
-        for _, file in ipairs(rc_files) do
-            local module_name = 'rc.' .. vim.fn.fnamemodify(file, ':t:r')
-            package.loaded[module_name] = nil
-            pcall(require, module_name)
-        end
-        
-        print('Neovim configuration reloaded!')
-    end, 100)
-end, { desc = 'Reload all Neovim configuration without restarting' })
+    end, 200)
+end
+
+-- Reload Neovim command
+vim.api.nvim_create_user_command('ReloadAll', reload_all, { desc = 'Reload all Neovim configuration without restarting' })

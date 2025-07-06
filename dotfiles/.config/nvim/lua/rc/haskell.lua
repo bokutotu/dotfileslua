@@ -45,7 +45,8 @@ map('n', '<S-F12>', '<C-t>')
 -- 4. 保存時フォーマット : fourmolu → stylish-haskell
 --──────────────────────────────────────────────────────────────
 local function echo_err(tag, lines)
-  api.nvim_echo({ { tag .. ': ' .. table.concat(lines, '\n'), 'ErrorMsg' } }, false, {})
+  -- Use vim.notify for non-blocking error display
+  vim.notify(tag .. ': ' .. table.concat(lines, '\n'), vim.log.levels.ERROR)
 end
 
 local function strip_loaded(lines)
@@ -75,7 +76,16 @@ local function format_hs(bufnr)
     src
   )
   if vim.v.shell_error ~= 0 then
-    echo_err('fourmolu', four); return
+    -- Only show first few lines of error to avoid blocking
+    local err_lines = {}
+    for i = 1, math.min(3, #four) do
+      table.insert(err_lines, four[i])
+    end
+    if #four > 3 then
+      table.insert(err_lines, '... (' .. (#four - 3) .. ' more lines)')
+    end
+    echo_err('fourmolu', err_lines)
+    return
   end
   four = strip_loaded(four)
 
@@ -84,7 +94,16 @@ local function format_hs(bufnr)
   if vim.fn.executable('stylish-haskell') == 1 then
     styl = vim.fn.systemlist({ 'stylish-haskell' }, table.concat(four, '\n'))
     if vim.v.shell_error ~= 0 then
-      echo_err('stylish-haskell', styl); return
+      -- Only show first few lines of error to avoid blocking
+      local err_lines = {}
+      for i = 1, math.min(3, #styl) do
+        table.insert(err_lines, styl[i])
+      end
+      if #styl > 3 then
+        table.insert(err_lines, '... (' .. (#styl - 3) .. ' more lines)')
+      end
+      echo_err('stylish-haskell', err_lines)
+      return
     end
   else
     styl = four

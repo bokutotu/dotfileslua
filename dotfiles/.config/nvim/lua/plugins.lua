@@ -93,7 +93,7 @@ return packer.startup({
     use 'yioneko/nvim-yati'
 
     -- 括弧 / autopairs
-    use 'andymass/vim-matchup'
+    -- use 'andymass/vim-matchup'
     use 'windwp/nvim-autopairs'
 
     -- Snippet
@@ -116,6 +116,9 @@ return packer.startup({
 
     -- File explorer
     use 'nvim-tree/nvim-tree.lua'
+
+    -- Git
+    use { 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim' }
 
     -- Kotlin
     use 'udalov/kotlin-vim'
