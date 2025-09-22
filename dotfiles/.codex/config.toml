@@ -1,0 +1,30 @@
+projects = {}
+
+# ここはお好みで。常に確認を取りたいなら "untrusted" が実務的です
+approval_policy = "untrusted"
+
+# 既定の read-only を上書きし、作業ディレクトリ内での実行を許可
+sandbox_mode = "workspace-write"
+model = "gpt-5-codex"
+
+[sandbox_workspace_write]
+# サンドボックス内のネットワークを有効化（既定は false）
+network_access = true
+
+[tools]
+web_search = true
+
+safeCommands = [
+  "ls",
+  "rg",
+  "nl",
+  "sed",
+  "awk",
+  "gh",
+  "bash",
+  "jq"
+]
+
+[mcp_servers.playwright]
+    command = "npx"
+    args = ["@playwright/mcp@latest"]
