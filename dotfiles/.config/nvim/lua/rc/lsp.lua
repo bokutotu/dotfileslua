@@ -1,11 +1,9 @@
 --------------------------------------------------------------------------------
 -- rc/lsp.lua – Neovim 0.10+ 専用（inlay-hint 新 API 使用）
 --------------------------------------------------------------------------------
-local fn, api = vim.fn, vim.api
-local lspconfig   = require("lspconfig")
-local util        = require("lspconfig.util")
-local capabilities= require("cmp_nvim_lsp").default_capabilities()
-local on_attach   = function() end  -- ここにキー設定などを足す
+local fn = vim.fn
+local capabilities = require("cmp_nvim_lsp").default_capabilities()
+local on_attach = function(_) end  -- ここにキー設定などを足す
 
 -- =============================================================================
 -- 0. ヘルパー
@@ -83,22 +81,40 @@ local function ensure_ccls_installed()
 end
 
 -- =============================================================================
--- 2. LSPConfig – 個別に手動セットアップ
+-- 2. LSP 設定 – 新 API (vim.lsp.config + vim.lsp.enable)
 -- =============================================================================
+
+-- 2.0 すべてのクライアントに共通オプションを適用
+vim.lsp.config('*', {
+  capabilities = capabilities,
+  on_attach = on_attach,
+})
+
 -- 2.1 C/C++
 local have_ccls, ccls_bin = ensure_ccls_installed()
 if have_ccls then
-  lspconfig.ccls.setup({
-    cmd          = { ccls_bin },
-    on_attach    = on_attach,
-    capabilities = capabilities,
-    root_dir     = function(fname) return util.find_git_ancestor(fname) or fn.getcwd() end,
+  vim.lsp.config('ccls', {
+    cmd = { ccls_bin },
+    filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda' },
+    root_markers = {
+      '.ccls',
+      'compile_commands.json',
+      'compile_flags.txt',
+      '.git',
+    },
+    workspace_required = true,
   })
+  vim.lsp.enable('ccls')
 end
 
--- 2.2 TypeScript
-lspconfig.ts_ls.setup({
-  on_attach    = on_attach,
-  capabilities = capabilities,
-  filetypes    = { "typescript", "javascript", "typescriptreact", "javascriptreact" },
+-- 2.2 TypeScript / JavaScript
+vim.lsp.config('ts_ls', {
+  filetypes = { 'typescript', 'javascript', 'typescriptreact', 'javascriptreact' },
+  root_markers = {
+    'package.json',
+    'tsconfig.json',
+    'jsconfig.json',
+    '.git',
+  },
 })
+vim.lsp.enable('ts_ls')

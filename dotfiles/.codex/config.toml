@@ -6,6 +6,7 @@ approval_policy = "untrusted"
 # 既定の read-only を上書きし、作業ディレクトリ内での実行を許可
 sandbox_mode = "workspace-write"
 model = "gpt-5-codex"
+model_reasoning_effort = "high"
 
 [sandbox_workspace_write]
 # サンドボックス内のネットワークを有効化（既定は false）
@@ -17,7 +18,10 @@ web_search = true
 safeCommands = [
   "ls",
   "rg",
+  "rg -n",
+  "rg --files",
   "nl",
+  "nl -ba",
   "sed",
   "awk",
   "gh",

@@ -127,12 +127,19 @@ api.nvim_create_autocmd('BufWritePre', {
 -- 5. HLS（診断・補完のみ、フォーマッタ無効）
 --──────────────────────────────────────────────────────────────
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
-require('lspconfig').hls.setup {
+
+vim.lsp.config('hls', {
   cmd = { 'haskell-language-server', '--lsp' },
   capabilities = capabilities,
-  root_dir = require('lspconfig.util')
-               .root_pattern('hie.yaml', '*.cabal', 'stack.yaml', '.git'),
-  on_attach = function(client, bufnr)
+  filetypes = { 'haskell', 'lhaskell', 'cabal' },
+  root_markers = {
+    'hie.yaml',
+    'stack.yaml',
+    'cabal.project',
+    '*.cabal',
+    '.git',
+  },
+  on_attach = function(client, _)
     -- Disable HLS formatting to avoid conflicts with custom formatter
     client.server_capabilities.documentFormattingProvider = false
     client.server_capabilities.documentRangeFormattingProvider = false
@@ -140,16 +147,18 @@ require('lspconfig').hls.setup {
   settings = {
     haskell = {
       diagnosticsOnChange = true,
-      checkParents        = 'CheckOnSave',
-      formattingProvider  = 'none',
+      checkParents = 'CheckOnSave',
+      formattingProvider = 'none',
       plugin = {
-        fourmolu            = { globalOn = false },
+        fourmolu = { globalOn = false },
         ['stylish-haskell'] = { globalOn = false },
-        hlint               = { globalOn = true },
+        hlint = { globalOn = true },
       },
     },
   },
-}
+})
+
+vim.lsp.enable('hls')
 
 --──────────────────────────────────────────────────────────────
 -- 6. fast-tags 自動再生成
@@ -164,4 +173,3 @@ api.nvim_create_autocmd('BufWritePost', {
     end
   end,
 })
-
