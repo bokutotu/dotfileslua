@@ -29,6 +29,3 @@ safeCommands = [
   "jq"
 ]
 
-[mcp_servers.playwright]
-    command = "npx"
-    args = ["@playwright/mcp@latest"]
