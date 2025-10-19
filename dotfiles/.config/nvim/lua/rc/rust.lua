@@ -12,8 +12,7 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- Setup rustaceanvim
-local cmp_nvim_lsp = require("cmp_nvim_lsp")
-local capabilities = cmp_nvim_lsp.default_capabilities()
+local capabilities = require("rc.capabilities").get()
 local util = require("lspconfig.util")
 
 vim.g.rustaceanvim = {
@@ -65,4 +64,3 @@ vim.g.rustaceanvim = {
     end,
   },
 }
-

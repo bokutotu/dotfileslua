@@ -2,7 +2,7 @@
 -- rc/lsp.lua – Neovim 0.10+ 専用（inlay-hint 新 API 使用）
 --------------------------------------------------------------------------------
 local fn = vim.fn
-local capabilities = require("cmp_nvim_lsp").default_capabilities()
+local capabilities = require("rc.capabilities").get()
 local on_attach = function(_) end  -- ここにキー設定などを足す
 
 -- =============================================================================

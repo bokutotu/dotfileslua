@@ -126,7 +126,7 @@ api.nvim_create_autocmd('BufWritePre', {
 --──────────────────────────────────────────────────────────────
 -- 5. HLS（診断・補完のみ、フォーマッタ無効）
 --──────────────────────────────────────────────────────────────
-local capabilities = require('cmp_nvim_lsp').default_capabilities()
+local capabilities = require('rc.capabilities').get()
 
 vim.lsp.config('hls', {
   cmd = { 'haskell-language-server', '--lsp' },
