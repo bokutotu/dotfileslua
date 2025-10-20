@@ -1,4 +1,5 @@
 local api = vim.api
+local capabilities = require('rc.capabilities').get()
 
 --──────────────────────────────────────────────────────────────
 -- 1. key-map helper
@@ -22,30 +23,55 @@ api.nvim_create_autocmd('FileType', {
 })
 
 --──────────────────────────────────────────────────────────────
--- 3. go-to-definition（HLS → fast-tags fallback）
+-- 3. haskell-tools 設定
 --──────────────────────────────────────────────────────────────
-local function goto_def()
-  local enc = (vim.lsp.get_clients()[1] or {}).offset_encoding or 'utf-8'
-  local pos = vim.lsp.util.make_position_params(nil, enc)
-  local res = vim.lsp.buf_request_sync(0, 'textDocument/definition', pos, 250)
-  if res then
-    for _, v in pairs(res) do
-      if v.result and not vim.tbl_isempty(v.result) then
-        vim.lsp.util.jump_to_location(v.result[1], enc)
-        return
-      end
-    end
+local function merge_haskell_tools_defaults(user_config)
+  local defaults = {
+    tools = {
+      tags = {
+        enable = true,
+      },
+    },
+    hls = {
+      capabilities = capabilities,
+      default_settings = {
+        haskell = {
+          formattingProvider = 'none',
+          plugin = {
+            fourmolu = { globalOn = false },
+            ['stylish-haskell'] = { globalOn = false },
+            hlint = { globalOn = true },
+          },
+        },
+      },
+    },
+  }
+
+  if type(user_config) ~= 'table' then
+    return defaults
   end
-  vim.cmd('silent! tag ' .. vim.fn.expand('<cword>'))
+
+  return vim.tbl_deep_extend('force', defaults, user_config)
 end
-map('n', '<F12>', goto_def)
-map('n', '<S-F12>', '<C-t>')
+
+if type(vim.g.haskell_tools) == 'function' then
+  local user_config_fn = vim.g.haskell_tools
+  vim.g.haskell_tools = function()
+    local ok, cfg = pcall(user_config_fn)
+    if not ok then
+      vim.notify('haskell-tools config error: ' .. cfg, vim.log.levels.ERROR)
+      return merge_haskell_tools_defaults(nil)
+    end
+    return merge_haskell_tools_defaults(cfg)
+  end
+else
+  vim.g.haskell_tools = merge_haskell_tools_defaults(vim.g.haskell_tools)
+end
 
 --──────────────────────────────────────────────────────────────
 -- 4. 保存時フォーマット : fourmolu → stylish-haskell
 --──────────────────────────────────────────────────────────────
 local function echo_err(tag, lines)
-  -- Use vim.notify for non-blocking error display
   vim.notify(tag .. ': ' .. table.concat(lines, '\n'), vim.log.levels.ERROR)
 end
 
@@ -61,22 +87,21 @@ end
 
 local function format_hs(bufnr)
   bufnr = bufnr or 0
-  local file = api.nvim_buf_get_name(bufnr); if file == '' then return end
+  local file = api.nvim_buf_get_name(bufnr)
+  if file == '' then return end
 
   if vim.fn.executable('fourmolu') ~= 1 then
-    echo_err('format-hs', { 'fourmolu not found in PATH' }); return
+    echo_err('format-hs', { 'fourmolu not found in PATH' })
+    return
   end
 
-  -- 現内容
   local src = table.concat(api.nvim_buf_get_lines(bufnr, 0, -1, false), '\n')
 
-  -- ❶ fourmolu
   local four = vim.fn.systemlist(
     { 'fourmolu', '--stdin-input-file', file },
     src
   )
   if vim.v.shell_error ~= 0 then
-    -- Only show first few lines of error to avoid blocking
     local err_lines = {}
     for i = 1, math.min(3, #four) do
       table.insert(err_lines, four[i])
@@ -89,12 +114,10 @@ local function format_hs(bufnr)
   end
   four = strip_loaded(four)
 
-  -- ❷ stylish-haskell（ある場合のみ）
   local styl
   if vim.fn.executable('stylish-haskell') == 1 then
     styl = vim.fn.systemlist({ 'stylish-haskell' }, table.concat(four, '\n'))
     if vim.v.shell_error ~= 0 then
-      -- Only show first few lines of error to avoid blocking
       local err_lines = {}
       for i = 1, math.min(3, #styl) do
         table.insert(err_lines, styl[i])
@@ -109,7 +132,6 @@ local function format_hs(bufnr)
     styl = four
   end
 
-  -- 反映
   local old = api.nvim_buf_get_lines(bufnr, 0, -1, false)
   if table.concat(styl, '\n') ~= table.concat(old, '\n') then
     local view = vim.fn.winsaveview()
@@ -118,58 +140,25 @@ local function format_hs(bufnr)
   end
 end
 
-api.nvim_create_autocmd('BufWritePre', {
-  pattern = { '*.hs', '*.lhs' },
-  callback = function(a) format_hs(a.buf) end,
-})
-
 --──────────────────────────────────────────────────────────────
--- 5. HLS（診断・補完のみ、フォーマッタ無効）
+-- 5. haskell-tools 連携用の buffer-local 設定
 --──────────────────────────────────────────────────────────────
-local capabilities = require('rc.capabilities').get()
+local format_group = api.nvim_create_augroup('HaskellToolsFormat', { clear = true })
 
-vim.lsp.config('hls', {
-  cmd = { 'haskell-language-server', '--lsp' },
-  capabilities = capabilities,
-  filetypes = { 'haskell', 'lhaskell', 'cabal' },
-  root_markers = {
-    'hie.yaml',
-    'stack.yaml',
-    'cabal.project',
-    '*.cabal',
-    '.git',
-  },
-  on_attach = function(client, _)
-    -- Disable HLS formatting to avoid conflicts with custom formatter
-    client.server_capabilities.documentFormattingProvider = false
-    client.server_capabilities.documentRangeFormattingProvider = false
-  end,
-  settings = {
-    haskell = {
-      diagnosticsOnChange = true,
-      checkParents = 'CheckOnSave',
-      formattingProvider = 'none',
-      plugin = {
-        fourmolu = { globalOn = false },
-        ['stylish-haskell'] = { globalOn = false },
-        hlint = { globalOn = true },
-      },
-    },
-  },
-})
+api.nvim_create_autocmd('FileType', {
+  group = format_group,
+  pattern = { 'haskell', 'lhaskell' },
+  callback = function(args)
+    if vim.b.haskell_tools_attached then return end
+    vim.b.haskell_tools_attached = true
 
-vim.lsp.enable('hls')
+    map('n', '<F12>', vim.lsp.buf.definition, { buffer = args.buf })
+    map('n', '<S-F12>', '<C-t>', { buffer = args.buf })
 
---──────────────────────────────────────────────────────────────
--- 6. fast-tags 自動再生成
---──────────────────────────────────────────────────────────────
-vim.o.tags = './.tags;,./**/*.tags'
-api.nvim_create_autocmd('BufWritePost', {
-  group   = api.nvim_create_augroup('HsTags', { clear = true }),
-  pattern = { '*.hs', '*.lhs', '*.cabal' },
-  callback = function()
-    if vim.fn.executable('fast-tags') == 1 then
-      vim.fn.jobstart({ 'fast-tags', '-R', '.' }, { detach = true })
-    end
+    api.nvim_create_autocmd('BufWritePre', {
+      group = format_group,
+      buffer = args.buf,
+      callback = function(ev) format_hs(ev.buf) end,
+    })
   end,
 })
