@@ -129,6 +129,9 @@ return packer.startup({
     -- Flutter
     use 'akinsho/flutter-tools.nvim'
 
+    -- Haskell
+    use { 'mrcjkb/haskell-tools.nvim', branch = 'master'}
+
     ------------------------------------------------------------------
     -- 自動同期 (初回 bootstrap されたとき)
     ------------------------------------------------------------------
