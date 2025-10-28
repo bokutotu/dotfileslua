@@ -30,7 +30,8 @@ vim.g.rustaceanvim = {
     capabilities = capabilities,
     settings = {
       ["rust-analyzer"] = {
-        checkOnSave = {
+        checkOnSave = true,
+        check = {
           command = "clippy",
           extraArgs = { "--", "-W", "clippy::pedantic" },
         },

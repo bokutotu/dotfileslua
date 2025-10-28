@@ -101,6 +101,31 @@ if status --is-interactive
     if not functions -q nvm
         fisher install jorgebucaran/nvm.fish
     end
+
+    set -l nvm_repo_default $HOME/.config/.nvmrc
+    if functions -q nvm; and test -f $nvm_repo_default
+        set -l repo_default_version (string trim (command head -n 1 $nvm_repo_default))
+        if test -n "$repo_default_version"
+            if not set -q nvm_default_version; or test "$nvm_default_version" != "$repo_default_version"
+                set -Ux nvm_default_version $repo_default_version
+            end
+        end
+    end
+    
+    # Auto use Node versions managed via nvm when entering directories
+    function __nvm_auto_use --on-variable PWD --description 'auto switch node version'
+        status --is-command-substitution; and return
+        if not functions -q nvm
+            return
+        end
+
+        if test -f $PWD/.nvmrc
+            nvm use --silent >/dev/null 2>&1
+        else if set -q nvm_default_version
+            nvm use --silent default >/dev/null 2>&1
+        end
+    end
+    __nvm_auto_use
     
     # Add deno to PATH
     if test -d $HOME/.deno/bin
