@@ -12,8 +12,7 @@ model_reasoning_effort = "high"
 # サンドボックス内のネットワークを有効化（既定は false）
 network_access = true
 
-[tools]
-web_search = true
+web_search_request = "true"
 
 safeCommands = [
   "ls",
