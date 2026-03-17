@@ -73,8 +73,9 @@ vim.api.nvim_command('nnoremap sv :<C-u>vs<CR><C-w>l')
 
 -- color schemt
 -- vim.api.nvim_command('colorscheme hybrid')
-vim.api.nvim_command('colorscheme onedark')
-vim.api.nvim_command('set background=dark')
+vim.opt.termguicolors = true
+vim.o.background = 'light'
+vim.cmd.colorscheme('NeoSolarized')
 
 vim.api.nvim_command("set fileformats=unix,dos,mac")
 vim.api.nvim_command("set fileencodings=utf-8,sjis")

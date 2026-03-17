@@ -23,7 +23,7 @@ return packer.startup({
     -- Packer 本体 & テーマ
     ------------------------------------------------------------------
     use 'wbthomason/packer.nvim'
-    use 'navarasu/onedark.nvim'
+    use 'lanx-x/NeoSolarized'
     use 'github/copilot.vim'
 
     ------------------------------------------------------------------
@@ -151,4 +151,3 @@ return packer.startup({
     end },
   }
 })
-
