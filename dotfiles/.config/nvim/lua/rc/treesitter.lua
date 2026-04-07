@@ -1,30 +1,20 @@
--- Tree-sitterの設定
-require'nvim-treesitter.configs'.setup {
-  -- ここで有効にする機能を指定します
-  ensure_installed = {"lua","rust", "python", "c", "cpp"}, -- インストールする言語パーサを指定
-  sync_install = false, -- 起動時にインストールを同期的に実行するかどうか
-  auto_install = true, -- 言語パーサがない場合に自動的にインストールするかどうか
-  highlight = {
-    enable = true, -- ハイライトを有効にする
-    additional_vim_regex_highlighting = false, -- Vimの正規表現ハイライトを追加で使用するかどうか
-  },
-  indent = {
-    enable = true, -- インデントをTree-sitterで行うかどうか
-  },
-}
+local ts = require('nvim-treesitter')
 
--- dartのTree-sitterのindentが遅いので無効化する
-vim.api.nvim_create_autocmd("FileType", {
-    pattern = "dart",
-    callback = function()
-        vim.cmd("TSDisable indent")
-    end
+local parsers = { 'lua', 'rust', 'python', 'c', 'cpp' }
+local filetypes = { 'lua', 'rust', 'python', 'c', 'cpp' }
+local group = vim.api.nvim_create_augroup('treesitter_main_setup', { clear = true })
+
+ts.setup({
+  install_dir = vim.fn.stdpath('data') .. '/site',
 })
 
--- vim.api.nvim_create_autocmd("BufLeave", {
---     pattern = "*.dart",
---     callback = function()
---         vim.cmd("TSEnable indent")
---     end
--- })
---
+ts.install(parsers)
+
+vim.api.nvim_create_autocmd('FileType', {
+  group = group,
+  pattern = filetypes,
+  callback = function(args)
+    pcall(vim.treesitter.start, args.buf)
+    vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+  end,
+})

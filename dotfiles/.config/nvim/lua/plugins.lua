@@ -45,7 +45,7 @@ return packer.startup({
     ------------------------------------------------------------------
     -- Telescope
     ------------------------------------------------------------------
-    use { 'nvim-telescope/telescope.nvim', tag = '0.1.6' }
+    use 'nvim-telescope/telescope.nvim'
     use 'nvim-telescope/telescope-frecency.nvim'
 
     ------------------------------------------------------------------
@@ -80,7 +80,7 @@ return packer.startup({
     -- Rust
     ------------------------------------------------------------------
     use 'simrat39/rust-tools.nvim'
-    use 'mrcjkb/rustaceanvim'
+    use { 'mrcjkb/rustaceanvim', branch = 'main' }
     use 'rust-lang/rust.vim'
 
     ------------------------------------------------------------------
@@ -89,8 +89,7 @@ return packer.startup({
     use 'RRethy/vim-illuminate'
 
     -- Treesitter
-    use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
-    use 'yioneko/nvim-yati'
+    use { 'nvim-treesitter/nvim-treesitter', branch = 'main', run = ':TSUpdate' }
 
     -- 括弧 / autopairs
     -- use 'andymass/vim-matchup'

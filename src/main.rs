@@ -196,10 +196,14 @@ fn fzf() {
 }
 
 fn ripgrep() -> Result<(), Error> {
+    cargo_install("ripgrep")
+}
+
+fn cargo_install(package: &str) -> Result<(), Error> {
     println!("=============================================");
-    println!("install ripgrep");
+    println!("install {package}");
     let command = Command::new("cargo")
-        .args(["install", "ripgrep"])
+        .args(["install", package])
         .output()
         .expect("faild to install");
     print_with_new_line(&byte_string(command.stderr)?);
@@ -209,16 +213,11 @@ fn ripgrep() -> Result<(), Error> {
 }
 
 fn lsd() -> Result<(), Error> {
-    println!("=============================================");
-    println!("install lsd");
-    let command = Command::new("cargo")
-        .args(["install", "lsd"])
-        .output()
-        .expect("failed to install lsd");
-    print_with_new_line(&byte_string(command.stderr)?);
-    print_with_new_line(&byte_string(command.stdout)?);
-    println!("=============================================");
-    Ok(())
+    cargo_install("lsd")
+}
+
+fn tree_sitter_cli() -> Result<(), Error> {
+    cargo_install("tree-sitter-cli")
 }
 
 fn deno() -> Result<(), Error> {
@@ -243,6 +242,7 @@ fn main() -> Result<(), Error> {
     fzf();
     ripgrep()?;
     lsd()?;
+    tree_sitter_cli()?;
     deno()?;
     for path in files {
         let mut new_path = home_dir.clone();
