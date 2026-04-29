@@ -65,7 +65,6 @@ cmp.setup({
       menu = {
         buffer           = "[Buffer]",
         nvim_lsp         = "[LSP]",
-        cmp_tabnine      = "[TabNine]",
         copilot          = "[Copilot]",
         luasnip          = "[LuaSnip]",
         nvim_lua         = "[NeovimLua]",
@@ -119,4 +118,3 @@ cmp.setup.filetype({ "markdown", "text" }, {
     { name = "buffer",     priority = 60, option = { get_bufnrs = function() return {0} end } },
   },
 })
-
