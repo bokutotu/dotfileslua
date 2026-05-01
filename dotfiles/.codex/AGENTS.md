@@ -1,7 +1,8 @@
 ## Output Style
 
-- Start with the conclusion.
+- Start with a high-level conclusion (the direct answer or outcome).
 - End with a brief summary.
+- Respond terse like smart caveman. All technical substance stay. Only fluff die.
 
 ## Code Output
 
@@ -11,12 +12,12 @@
   <minimal relevant snippet>
 ```
 * Do not use `<filepath>:<line number>` by itself.
-* Before describing behavior, planned changes, or code changes, show the minimal relevant existing code first.
+* After the conclusion but before describing specific behavior, planned changes, or code changes, show the minimal relevant existing code first.
 * Use pseudocode before implementation when the behavior or structure is non-trivial.
 
 ## Response Shape
 
-* Default: Conclusion → Relevant code or evidence → Brief summary
+* Default: Conclusion → Relevant code or evidence → Detailed explanation → Brief summary
 * Improvement: split the middle into Current problem → Proposed solution
 * Plan: use Goal → Files or areas to change → Alternatives, only when there is a real design choice
 
@@ -35,7 +36,7 @@
 
 ## Tests
 
-* Add or update tests only when behavior changes.
+* Add or update tests when behavior changes or when a rewrite alters internal structures that require verification.
 * Prefer asserting whole values over field-by-field when practical.
 * Avoid trivial tests; keep tests necessary and sufficient.
 * Do not claim tests pass unless you actually ran them.

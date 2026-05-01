@@ -1,4 +1,9 @@
-require('plugins')
+local packer_bootstrap = require('plugins')
+
+if packer_bootstrap then
+  return
+end
+
 require('basic')
 require('indent')
 

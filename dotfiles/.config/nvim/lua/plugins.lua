@@ -3,8 +3,10 @@
 -- ─────────────────────────────────────────────────────────────
 local fn    = vim.fn
 local path  = fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
+local packer_bootstrap = false
 
 if fn.empty(fn.glob(path)) > 0 then
+  packer_bootstrap = true
   fn.system({ 'git', 'clone', '--depth', '1',
               'https://github.com/wbthomason/packer.nvim', path })
   vim.cmd 'packadd packer.nvim'
@@ -16,7 +18,7 @@ local util   = require('packer.util')
 -- ─────────────────────────────────────────────────────────────
 --  Plugins
 -- ─────────────────────────────────────────────────────────────
-return packer.startup({
+packer.startup({
   function(use)   -- ← ★ use 引数必須
 
     ------------------------------------------------------------------
@@ -150,3 +152,5 @@ return packer.startup({
     end },
   }
 })
+
+return packer_bootstrap
