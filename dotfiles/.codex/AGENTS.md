@@ -26,7 +26,7 @@
 
 ## Ambiguity Resolution
 
-- Always verify that the user's instructions lack ambiguity before starting any implementation.
+- Always verify that the user's instructions lack ambiguity before starting any implementation or any plan.
 - If there is any ambiguity, no matter how trivial, you must ask for clarification before proceeding.
 - If a single question and answer cycle does not fully resolve the ambiguity, you must continuously ask follow-up questions until all doubts are completely eliminated.
 - If a question or clarification relates to the project, you must thoroughly check the existing code before responding or asking.
