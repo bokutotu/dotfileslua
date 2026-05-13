@@ -24,6 +24,19 @@
 - Not error handleing. If there are unexpected output from test code, the test should fail.
 - in unit test, test case only test target function. just input expected input to target function.
 
+## Conversation Scope
+
+- Do not treat every user message as a task request.
+- First identify what kind of response the user is asking for: conversation, explanation, options, diff, implementation, or verification.
+- Stay within the requested response type.
+- Do not turn a question, complaint, observation, or discussion into file edits, investigations, refactors, tests, or implementation work.
+- Do not infer a hidden larger task from the user's message.
+- If the user asks for an opinion, explain the reasoning and stop.
+- If the user asks for a diff, show the diff and do not edit files.
+- If the user asks to inspect, inspect only the relevant files and report findings.
+- If the user asks to implement, make only the changes required for that explicit request.
+- If a related issue is found outside the requested scope, mention it as a follow-up instead of acting on it.
+
 ## Ambiguity Resolution
 
 - Always verify that the user's instructions lack ambiguity before starting any implementation or any plan.
