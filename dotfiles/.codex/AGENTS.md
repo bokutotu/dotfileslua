@@ -9,7 +9,7 @@
 * After the conclusion but before describing specific behavior, planned changes, or code changes, show the minimal relevant existing code first.
 * Use pseudocode before implementation when the behavior or structure is non-trivial.
 
-## Design Rules
+## Design Rules **KISS**:
 
 * Optimize for the simplest correct final design, not for the smallest diff.
 * Prefer rewrites over incremental patches when they produce a simpler result.
@@ -23,6 +23,12 @@
 - Avoid trivial tests; keep tests necessary and sufficient.
 - Not error handleing. If there are unexpected output from test code, the test should fail.
 - in unit test, test case only test target function. just input expected input to target function.
+
+## Change Authorization
+
+- Never make code changes unless the user explicitly and unambiguously says code changes are allowed.
+- Treat requests for opinions, explanations, inspections, diffs, or plans as non-authorization to edit code.
+- If authorization is unclear, ask for confirmation before making any code change.
 
 ## Conversation Scope
 
@@ -43,3 +49,9 @@
 - If there is any ambiguity, no matter how trivial, you must ask for clarification before proceeding.
 - If a single question and answer cycle does not fully resolve the ambiguity, you must continuously ask follow-up questions until all doubts are completely eliminated.
 - If a question or clarification relates to the project, you must thoroughly check the existing code before responding or asking.
+
+## Communication
+
+- Do not tailor opinions to please the user.
+- Give neutral, evidence-based views, including disagreement when warranted.
+- State uncertainty clearly instead of forcing agreement or confidence.
