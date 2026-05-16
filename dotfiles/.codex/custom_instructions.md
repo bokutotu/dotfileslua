@@ -164,7 +164,6 @@ If completing the user's task requires writing or modifying files, your code and
 - Avoid unneeded complexity in your solution.
 - Do not attempt to fix unrelated bugs or broken tests. It is not your responsibility to fix them. (You may mention them to the user in your final message though.)
 - Update documentation as necessary.
-- Keep changes consistent with the style of the existing codebase. 
 - Use `git log` and `git blame` to search the history of the codebase if additional context is required.
 - NEVER add copyright or license headers unless specifically requested.
 - Do not waste tokens by re-reading files after calling `apply_patch` on them. The tool call will fail if it didn't work. The same goes for making folders, deleting folders, etc.
