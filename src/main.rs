@@ -1,4 +1,5 @@
 use dirs::home_dir;
+use toml_edit::{value, DocumentMut};
 
 use std::convert::AsRef;
 use std::fs;
@@ -10,6 +11,7 @@ use std::string::FromUtf8Error;
 pub enum Error {
     IO(std::io::Error),
     FMT(std::fmt::Error),
+    TOML(toml_edit::TomlError),
     NotFoundError(String),
     FromUtf8Error,
     ConversionError,
@@ -32,6 +34,7 @@ macro_rules! impl_error_from {
 }
 impl_error_from!(std::io::Error, Error::IO);
 impl_error_from!(std::fmt::Error, Error::FMT);
+impl_error_from!(toml_edit::TomlError, Error::TOML);
 impl_error_from!(String, Error::NotFoundError);
 
 impl std::fmt::Display for Error {
@@ -39,6 +42,7 @@ impl std::fmt::Display for Error {
         match self {
             Error::IO(error) => write!(f, "io error {error}"),
             Error::FMT(error) => write!(f, "fmt error {error}"),
+            Error::TOML(error) => write!(f, "toml error {error}"),
             Error::NotFoundError(error) => write!(f, "file {error} is Not Found"),
             Error::ConversionError => write!(f, "ConversionError"),
             Error::FromUtf8Error => write!(f, "faild convert utf8"),
@@ -182,7 +186,7 @@ fn fzf() {
         .expect("Failed to clone fzf");
     print_with_new_line(&byte_string(command.stderr).unwrap());
     print_with_new_line(&byte_string(command.stdout).unwrap());
-    
+
     let mut install_script = fzf_install_dir.clone();
     install_script.push("install");
     let command = Command::new(&install_script)
@@ -234,6 +238,30 @@ fn deno() -> Result<(), Error> {
     Ok(())
 }
 
+fn patch_codex_config() -> Result<(), Error> {
+    let mut config_path = home_dir().unwrap();
+    config_path.push(".codex/config.toml");
+    if !config_path.exists() {
+        println!("Codex config {:?} is not found. skip patch", &config_path);
+        return Ok(());
+    }
+
+    let config = fs::read_to_string(&config_path)?;
+    let mut config = config.parse::<DocumentMut>()?;
+    if config.contains_key("model_instructions_file") {
+        println!(
+            "model_instructions_file is already set in {:?}",
+            &config_path
+        );
+        return Ok(());
+    }
+
+    config["model_instructions_file"] = value("~/.codex/custom_instructions.md");
+    fs::write(&config_path, config.to_string())?;
+    println!("set model_instructions_file in {:?}", &config_path);
+    Ok(())
+}
+
 fn main() -> Result<(), Error> {
     let dofiles_path = "./dotfiles".to_string();
     let files = dir_traversal(&dofiles_path).unwrap();
@@ -250,5 +278,6 @@ fn main() -> Result<(), Error> {
         println!("copy {:?} to {:?}", &path, &new_path);
         cp(path, new_path)?;
     }
+    patch_codex_config()?;
     Ok(())
 }
