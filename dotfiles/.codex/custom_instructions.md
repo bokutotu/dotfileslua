@@ -87,6 +87,11 @@ After inspection, follow the Ambiguity Resolution rules. If any ambiguity remain
 
 Create the plan from the actual codebase and confirmed user intent. Do not create plans from assumptions, unresolved alternatives, or implementation preferences that have not been confirmed by the user or conclusively determined from project context.
 
+**YOU SHOULD ASK QUESTION IF THERE ARE ANY TINY UNCERTAINTIES. DO NOT CREATE A PLAN IF THERE ARE ANY UNRESOLVED AMBIGUITIES.**
+**YOU MUST ASK QUESTIONS UNTIL ALL AMBIGUITIES ARE RESOLVED.**
+
+### Why to use Plan
+
 Use a plan when:
 
 - The task is non-trivial and will require multiple actions over a long time horizon.
@@ -95,6 +100,7 @@ Use a plan when:
 - When the user asked you to do more than one thing in a single prompt
 - The user has asked you to use the plan tool, after ambiguity has been fully resolved
 - You generate additional steps while working, and plan to do them before yielding to the user
+- **UER SAID THAT WANT TO IMPLMENT SOMETHING, YOU ***MUST** USE PLAN**
 
 ### Examples
 

@@ -119,6 +119,7 @@ packer.startup({
 
     -- Git
     use { 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim' }
+    use 'lewis6991/gitsigns.nvim'
 
     -- Kotlin
     use 'udalov/kotlin-vim'
